@@ -198,6 +198,7 @@ class PlayerApp(Gtk.Application):
             "state": self.engine.state, "pos1_s": self._st_pos1 / 1e9, "pos2_s": pos2 / 1e9,
             "levels": self._st_levels, "tracks": len(self.tracks), "pitch": self.engine.has_pitch,
             "scaletempo": self.engine.has_scaletempo, "cue": self._cues()[0] is not None,
+            "resolution": self.engine.resolution(), "title": self._title_text(),
         }
         out = os.environ.get("TMPLAYER_SCREENSHOT", "screenshot.png")
         surf = cairo.ImageSurface(cairo.FORMAT_ARGB32, face.CANVAS_W, face.CANVAS_H)
