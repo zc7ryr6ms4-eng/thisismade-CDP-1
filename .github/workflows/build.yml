@@ -53,8 +53,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y desktop-file-utils appstream
-          desktop-file-validate data/io.github.thisismade.CDPlayer.desktop
-          appstreamcli validate --no-net --pedantic data/io.github.thisismade.CDPlayer.metainfo.xml || true
+          desktop-file-validate data/io.github.thisismade.cdp2.desktop
+          appstreamcli validate --no-net --pedantic data/io.github.thisismade.cdp2.metainfo.xml || true
       - name: Bauen
         run: bash build-deb.sh
       - name: Installation testen
@@ -62,7 +62,7 @@ jobs:
           sudo apt-get install -y ./dist/*.deb xvfb dbus-x11
           python3 tests/make_tone.py "$RUNNER_TEMP/tone.wav"
           TMPLAYER_SELFTEST="$RUNNER_TEMP/tone.wav" TMPLAYER_SCREENSHOT="$RUNNER_TEMP/s.png" \
-            timeout 60 dbus-run-session -- xvfb-run -a thisismade-cd-player
+            timeout 60 dbus-run-session -- xvfb-run -a thisismade-cdp-2
       - uses: actions/upload-artifact@v4
         with:
           name: deb
@@ -96,17 +96,17 @@ jobs:
         run: bash macos/build.sh --dmg
       - name: Start-Test (App startet und läuft 5 s)
         run: |
-          "macos/build/Thisismade CD Player.app/Contents/MacOS/ThisismadeCDPlayer" &
+          "macos/build/thisismade cdp-2.app/Contents/MacOS/thisismade-cdp-2" &
           PID=$!
           sleep 5
           kill -0 $PID
           kill $PID
       - name: Installationspaket (.pkg, fertig kompiliert)
         run: |
-          pkgbuild --component "macos/build/Thisismade CD Player.app" --install-location /Applications \
-            --identifier io.github.thisismade.CDPlayer --version 1.0.0 macos/build/component.pkg
-          productbuild --package macos/build/component.pkg macos/build/ThisismadeCDPlayer-1.0.0.pkg
-          pkgutil --payload-files macos/build/ThisismadeCDPlayer-1.0.0.pkg | head -5
+          pkgbuild --component "macos/build/thisismade cdp-2.app" --install-location /Applications \
+            --identifier io.github.thisismade.cdp2 --version 1.0.0 macos/build/component.pkg
+          productbuild --package macos/build/component.pkg macos/build/thisismade-cdp-2-1.0.0.pkg
+          pkgutil --payload-files macos/build/thisismade-cdp-2-1.0.0.pkg | head -5
       - uses: actions/upload-artifact@v4
         with:
           name: dmg
@@ -114,7 +114,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: pkg
-          path: macos/build/ThisismadeCDPlayer-1.0.0.pkg
+          path: macos/build/thisismade-cdp-2-1.0.0.pkg
 
   windows:
     name: Windows 11 (Setup.exe)
@@ -126,7 +126,7 @@ jobs:
           dotnet-version: "8.0.x"
       - name: Bauen (self-contained, eine .exe)
         working-directory: windows
-        run: dotnet publish ThisismadeCDPlayer.csproj -c Release -o publish
+        run: dotnet publish thisismade-cdp-2.csproj -c Release -o publish
       - name: Selbsttest (abspielen, Tempo, Key Lock, Cue, Screenshot)
         shell: pwsh
         working-directory: windows
@@ -135,7 +135,7 @@ jobs:
           $env:TMPLAYER_SELFTEST = "$env:RUNNER_TEMP\tone.wav"
           $env:TMPLAYER_SCREENSHOT = "$PWD\screenshot-windows.png"
           $env:TMPLAYER_RESULT = "$PWD\selftest.txt"
-          $p = Start-Process -FilePath "publish\ThisismadeCDPlayer.exe" -PassThru
+          $p = Start-Process -FilePath "publish\thisismade-cdp-2.exe" -PassThru
           $null = $p.Handle
           if (-not $p.WaitForExit(90000)) { $p.Kill(); Write-Error "Zeitüberschreitung"; exit 1 }
           if (Test-Path selftest.txt) { Get-Content selftest.txt }
@@ -145,7 +145,7 @@ jobs:
         run: |
           if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) { choco install innosetup -y --no-progress }
           & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /DAppVersion=1.0.0 windows\installer.iss
-          Compress-Archive -Path windows\publish\ThisismadeCDPlayer.exe, LICENSE -DestinationPath windows\output\ThisismadeCDPlayer-portable-win-x64.zip
+          Compress-Archive -Path windows\publish\thisismade-cdp-2.exe, LICENSE -DestinationPath windows\output\thisismade-cdp-2-portable-win-x64.zip
       - uses: actions/upload-artifact@v4
         with:
           name: windows

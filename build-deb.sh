@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Baut das Debian/Ubuntu-Paket dist/thisismade-cd-player_<version>_all.deb
+# Baut das Debian/Ubuntu-Paket dist/thisismade-cdp-2_<version>_all.deb
 set -euo pipefail
 cd "$(dirname "$0")"
 
 VERSION="${1:-$(python3 -c 'import re;print(re.search(r"VERSION = \"([^\"]+)\"", open("tmplayer/app.py").read()).group(1))')}"
-PKG=thisismade-cd-player
-APP_ID=io.github.thisismade.CDPlayer
+PKG=thisismade-cdp-2
+APP_ID=io.github.thisismade.cdp2
 ROOT="$(mktemp -d)"
 trap 'rm -rf "$ROOT"' EXIT
 chmod 755 "$ROOT"
@@ -15,7 +15,7 @@ install -d "$ROOT/DEBIAN" "$ROOT/usr/bin" "$ROOT/usr/share/$PKG/tmplayer" \
            "$ROOT/usr/share/icons/hicolor/scalable/apps" "$ROOT/usr/share/doc/$PKG"
 
 install -m644 tmplayer/*.py "$ROOT/usr/share/$PKG/tmplayer/"
-install -m755 data/thisismade-cd-player "$ROOT/usr/bin/$PKG"
+install -m755 data/thisismade-cdp-2 "$ROOT/usr/bin/$PKG"
 install -m644 data/$APP_ID.desktop "$ROOT/usr/share/applications/"
 install -m644 data/$APP_ID.metainfo.xml "$ROOT/usr/share/metainfo/"
 install -m644 data/$APP_ID.svg "$ROOT/usr/share/icons/hicolor/scalable/apps/"
@@ -31,6 +31,9 @@ Architecture: all
 Installed-Size: $SIZE
 Maintainer: Thisismade <noreply@github.com>
 Homepage: https://github.com/zc7ryr6ms4-eng/thisismade-CDP-1
+Provides: thisismade-cd-player
+Conflicts: thisismade-cd-player
+Replaces: thisismade-cd-player
 Depends: python3 (>= 3.10), python3-gi, python3-gi-cairo, python3-cairo, gir1.2-gtk-4.0, gir1.2-gdkpixbuf-2.0, gir1.2-gstreamer-1.0, gstreamer1.0-plugins-base, gstreamer1.0-plugins-good
 Recommends: gstreamer1.0-plugins-bad, gstreamer1.0-libav, gstreamer1.0-pipewire | gstreamer1.0-pulseaudio
 Description: CD-Player-Software für GNOME

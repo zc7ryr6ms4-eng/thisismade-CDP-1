@@ -1,9 +1,9 @@
-# Thisismade CD Player – Snap nur für Wayland (keine X11-Schnittstelle).
+# thisismade cdp-2 – Snap nur für Wayland (keine X11-Schnittstelle).
 #
 # Entspricht der GNOME-Erweiterung von Snapcraft (gnome-46-2404, gpu-2404), aber
 # ausgeschrieben, damit die x11-Schnittstelle und die X11-Layouts entfallen.
 # GTK4 wird fest auf das Wayland-Backend gestellt (GDK_BACKEND=wayland).
-name: thisismade-cd-player
+name: thisismade-cdp-2
 base: core24
 version: '1.0.0'
 title: thisismade cdp-2
@@ -15,17 +15,17 @@ description: |
   Plays folders, files, playlists and audio CDs and integrates with the GNOME
   media controls (MPRIS). This snap runs on Wayland only (no X11).
 license: BSD-3-Clause
-icon: data/io.github.thisismade.CDPlayer.svg
+icon: data/io.github.thisismade.cdp2.svg
 grade: stable
 confinement: strict
 assumes:
   - snapd2.43
 
 apps:
-  thisismade-cd-player:
-    command: usr/bin/thisismade-cd-player
-    common-id: io.github.thisismade.CDPlayer
-    desktop: usr/share/applications/io.github.thisismade.CDPlayer.desktop
+  thisismade-cdp-2:
+    command: usr/bin/thisismade-cdp-2
+    common-id: io.github.thisismade.cdp2
+    desktop: usr/share/applications/io.github.thisismade.cdp2.desktop
     command-chain:
       - snap/command-chain/gpu-2404-wrapper
       - snap/command-chain/desktop-launch
@@ -44,7 +44,7 @@ apps:
       - mpris
     environment:
       GDK_BACKEND: wayland
-      PYTHONPATH: $SNAP/usr/share/thisismade-cd-player:$SNAP/usr/lib/python3/dist-packages
+      PYTHONPATH: $SNAP/usr/share/thisismade-cdp-2:$SNAP/usr/lib/python3/dist-packages
       GST_PLUGIN_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/gstreamer-1.0
 
 hooks:
@@ -85,7 +85,7 @@ plugs:
 slots:
   mpris:
     interface: mpris
-    name: thisismade_cdplayer
+    name: thisismade_cdp2
 
 layout:
   /usr/share/libdrm:
@@ -102,11 +102,11 @@ parts:
     plugin: dump
     source: .
     organize:
-      tmplayer: usr/share/thisismade-cd-player/tmplayer
-      data/thisismade-cd-player: usr/bin/thisismade-cd-player
-      data/io.github.thisismade.CDPlayer.desktop: usr/share/applications/io.github.thisismade.CDPlayer.desktop
-      data/io.github.thisismade.CDPlayer.svg: usr/share/icons/hicolor/scalable/apps/io.github.thisismade.CDPlayer.svg
-      data/io.github.thisismade.CDPlayer.metainfo.xml: usr/share/metainfo/io.github.thisismade.CDPlayer.metainfo.xml
+      tmplayer: usr/share/thisismade-cdp-2/tmplayer
+      data/thisismade-cdp-2: usr/bin/thisismade-cdp-2
+      data/io.github.thisismade.cdp2.desktop: usr/share/applications/io.github.thisismade.cdp2.desktop
+      data/io.github.thisismade.cdp2.svg: usr/share/icons/hicolor/scalable/apps/io.github.thisismade.cdp2.svg
+      data/io.github.thisismade.cdp2.metainfo.xml: usr/share/metainfo/io.github.thisismade.cdp2.metainfo.xml
     stage:
       - usr
     stage-packages:

@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# Baut "Thisismade CD Player.app" (Universal: Apple Silicon + Intel).
-#   ./build.sh            → build/Thisismade CD Player.app
-#   ./build.sh --dmg      → zusätzlich build/ThisismadeCDPlayer.dmg
+# Baut "thisismade cdp-2.app" (Universal: Apple Silicon + Intel).
+#   ./build.sh            → build/thisismade cdp-2.app
+#   ./build.sh --dmg      → zusätzlich build/thisismade-cdp-2.dmg
 #   ./build.sh --install  → nach /Programme installieren und starten
 # Benötigt nur die Xcode Command Line Tools (xcode-select --install).
 set -euo pipefail
 cd "$(dirname "$0")"
 
-NAME="Thisismade CD Player"
-EXE="ThisismadeCDPlayer"
+NAME="thisismade cdp-2"
+EXE="thisismade-cdp-2"
 APP="build/$NAME.app"
 MIN_OS="13.0"
 

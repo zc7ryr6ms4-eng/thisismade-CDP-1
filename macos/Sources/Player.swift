@@ -1,4 +1,4 @@
-// Bedienlogik des Thisismade CD Player (entspricht tmplayer/app.py der Linux-Version).
+// Bedienlogik des thisismade cdp-2 (entspricht tmplayer/app.py der Linux-Version).
 import AppKit
 import AVFoundation
 import MediaPlayer

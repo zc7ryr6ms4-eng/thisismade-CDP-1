@@ -1,9 +1,9 @@
-; Thisismade CD Player – Windows-Installer (Inno Setup 6)
+; thisismade cdp-2 – Windows-Installer (Inno Setup 6)
 #ifndef AppVersion
   #define AppVersion "1.0.0"
 #endif
-#define AppName "Thisismade CD Player"
-#define AppExe "ThisismadeCDPlayer.exe"
+#define AppName "thisismade cdp-2"
+#define AppExe "thisismade-cdp-2.exe"
 
 [Setup]
 AppId={{7B3C1E2A-5D44-4C8F-9A61-3E2B8D0F4C17}
@@ -16,9 +16,11 @@ AppSupportURL=https://github.com/zc7ryr6ms4-eng/thisismade-CDP-1/issues
 DefaultDirName={autopf}\{#AppName}
 DefaultGroupName={#AppName}
 DisableProgramGroupPage=yes
+UsePreviousAppDir=no
+UsePreviousGroup=no
 LicenseFile=..\LICENSE
 OutputDir=output
-OutputBaseFilename=ThisismadeCDPlayer-Setup-{#AppVersion}
+OutputBaseFilename=thisismade-cdp-2-Setup-{#AppVersion}
 SetupIconFile=app.ico
 UninstallDisplayIcon={app}\{#AppExe}
 Compression=lzma2/max
@@ -42,6 +44,13 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "publish\{#AppExe}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\LICENSE"; DestDir: "{app}"; DestName: "LICENSE.txt"; Flags: ignoreversion
 
+[InstallDelete]
+; Reste der Vorversion („Thisismade CD Player“)
+Type: files; Name: "{autoprograms}\Thisismade CD Player.lnk"
+Type: files; Name: "{autodesktop}\Thisismade CD Player.lnk"
+Type: filesandordirs; Name: "{autopf}\Thisismade CD Player"
+Type: filesandordirs; Name: "{userpf}\Thisismade CD Player"
+
 [Icons]
 Name: "{autoprograms}\{#AppName}"; Filename: "{app}\{#AppExe}"
 Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExe}"; Tasks: desktopicon
@@ -58,9 +67,9 @@ Root: HKA; Subkey: "Software\Classes\Applications\{#AppExe}\SupportedTypes"; Val
 Root: HKA; Subkey: "Software\Classes\Applications\{#AppExe}\SupportedTypes"; ValueType: string; ValueName: ".wma"; ValueData: ""
 Root: HKA; Subkey: "Software\Classes\Applications\{#AppExe}\SupportedTypes"; ValueType: string; ValueName: ".aac"; ValueData: ""
 Root: HKA; Subkey: "Software\Classes\Applications\{#AppExe}\SupportedTypes"; ValueType: string; ValueName: ".m3u"; ValueData: ""
-Root: HKA; Subkey: "Software\Classes\Directory\shell\ThisismadeCDPlayer"; ValueType: string; ValueData: "Mit {#AppName} abspielen"; Flags: uninsdeletekey
-Root: HKA; Subkey: "Software\Classes\Directory\shell\ThisismadeCDPlayer"; ValueType: string; ValueName: "Icon"; ValueData: "{app}\{#AppExe}"
-Root: HKA; Subkey: "Software\Classes\Directory\shell\ThisismadeCDPlayer\command"; ValueType: string; ValueData: """{app}\{#AppExe}"" ""%1"""
+Root: HKA; Subkey: "Software\Classes\Directory\shell\thisismade-cdp-2"; ValueType: string; ValueData: "Mit {#AppName} abspielen"; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\Directory\shell\thisismade-cdp-2"; ValueType: string; ValueName: "Icon"; ValueData: "{app}\{#AppExe}"
+Root: HKA; Subkey: "Software\Classes\Directory\shell\thisismade-cdp-2\command"; ValueType: string; ValueData: """{app}\{#AppExe}"" ""%1"""
 
 [Run]
 Filename: "{app}\{#AppExe}"; Description: "{cm:LaunchProgram,{#AppName}}"; Flags: nowait postinstall skipifsilent

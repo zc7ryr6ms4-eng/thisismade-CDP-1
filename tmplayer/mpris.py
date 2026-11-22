@@ -1,7 +1,7 @@
 """MPRIS2-Schnittstelle: GNOME-Mediensteuerung, Medientasten, Sperrbildschirm."""
 from gi.repository import Gio, GLib
 
-BUS_NAME = "org.mpris.MediaPlayer2.thisismade_cdplayer"
+BUS_NAME = "org.mpris.MediaPlayer2.thisismade_cdp2"
 PATH = "/org/mpris/MediaPlayer2"
 ROOT_IFACE = "org.mpris.MediaPlayer2"
 PLAYER_IFACE = "org.mpris.MediaPlayer2.Player"
@@ -123,7 +123,7 @@ class Mpris:
         inv.return_value(None)
 
     def _trackid(self):
-        return "/io/github/thisismade/CDPlayer/track/%d" % max(0, self.ctl.index)
+        return "/io/github/thisismade/cdp2/track/%d" % max(0, self.ctl.index)
 
     # --------------------------------------------------------------- Eigenschaften
     def _props(self, iface):

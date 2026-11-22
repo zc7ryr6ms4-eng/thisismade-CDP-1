@@ -1,4 +1,4 @@
-// Bedienlogik des Thisismade CD Player (entspricht tmplayer/app.py bzw. macos/Sources/Player.swift).
+// Bedienlogik des thisismade cdp-2 (entspricht tmplayer/app.py bzw. macos/Sources/Player.swift).
 using System.Diagnostics;
 using System.Drawing;
 using System.Text.Json;
@@ -80,7 +80,7 @@ public sealed class Player : IDisposable
     public Settings Settings { get; private set; }
 
     static string SettingsPath => System.IO.Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Thisismade CD Player", "settings.json");
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "thisismade cdp-2", "settings.json");
 
     public Player()
     {
@@ -97,6 +97,17 @@ public sealed class Player : IDisposable
     // ------------------------------------------------------------ Einstellungen
     void LoadSettings()
     {
+        try
+        {
+            var oldPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                                                 "Thisismade CD Player", "settings.json");
+            if (!File.Exists(SettingsPath) && File.Exists(oldPath))
+            {
+                Directory.CreateDirectory(System.IO.Path.GetDirectoryName(SettingsPath)!);
+                File.Copy(oldPath, SettingsPath);
+            }
+        }
+        catch { }
         try { Settings = JsonSerializer.Deserialize<Settings>(File.ReadAllText(SettingsPath)) ?? new Settings(); }
         catch { Settings = new Settings(); }
         Level = Settings.Level;

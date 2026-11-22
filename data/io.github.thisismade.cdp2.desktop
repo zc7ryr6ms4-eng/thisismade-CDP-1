@@ -5,8 +5,8 @@ GenericName=Musikplayer
 GenericName[en]=Music Player
 Comment=CD-Player-Software mit Tempo, Key Lock, Memory-Cues und Shuttle
 Comment[en]=CD player software with tempo, key lock, memory cues and shuttle
-Exec=thisismade-cd-player %U
-Icon=io.github.thisismade.CDPlayer
+Exec=thisismade-cdp-2 %U
+Icon=io.github.thisismade.cdp2
 Terminal=false
 Categories=AudioVideo;Audio;Player;GTK;
 Keywords=music;cd;player;tempo;varispeed;musik;audio;mp3;flac;
@@ -18,4 +18,4 @@ Actions=OpenCD;
 [Desktop Action OpenCD]
 Name=Audio-CD abspielen
 Name[en]=Play audio CD
-Exec=thisismade-cd-player cdda://
+Exec=thisismade-cdp-2 cdda://

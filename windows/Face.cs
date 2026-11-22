@@ -1,4 +1,4 @@
-// Gerätefront des Thisismade CD Player – GDI+-Zeichnung und Klickflächen.
+// Gerätefront des thisismade cdp-2 – GDI+-Zeichnung und Klickflächen.
 // Koordinaten: Geräteeinheiten (1200 x 660), y nach unten.
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -419,7 +419,7 @@ public static class Face
         Rect(g, 0, 0.5f, DevW, 1.2f, C(1, 1, 1, 0.9));
 
         Text(g, "thisismade", 40, 42, 24, C(0.12, 0.12, 0.13), Align.Left, true);
-        Text(g, "CD PLAYER  ·  CDP-01", 184, 41, 12, TxtDim, Align.Left);
+        Text(g, "CD PLAYER  ·  CDP-2", 184, 41, 12, TxtDim, Align.Left);
 
         float cx = DiscC.X, cy = DiscC.Y;
         Fill(g, Circle(cx, cy, WellR + 3), C(0.80, 0.80, 0.81));

@@ -1,8 +1,8 @@
-// Thisismade CD Player für macOS – Programmstart, Fenster und Menüs.
+// thisismade cdp-2 für macOS – Programmstart, Fenster und Menüs.
 import AppKit
 import UniformTypeIdentifiers
 
-let appName = "Thisismade CD Player"
+let appName = "thisismade cdp-2"
 let appVersion = "1.0.0"
 
 final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {

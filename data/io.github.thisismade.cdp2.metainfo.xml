@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>io.github.thisismade.CDPlayer</id>
+  <id>io.github.thisismade.cdp2</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>BSD-3-Clause</project_license>
   <name>thisismade cdp-2</name>
@@ -14,7 +14,7 @@
     zum Scratchen, Display mit Pegelanzeige, Tempo-Fader mit Key Lock, drei Memory-Cues, Shuttle-Suchlauf,
     direkte Titelwahl, Wiederholen und Zufall. Spielt Ordner, Dateien, Playlists und Audio-CDs.</p>
   </description>
-  <launchable type="desktop-id">io.github.thisismade.CDPlayer.desktop</launchable>
+  <launchable type="desktop-id">io.github.thisismade.cdp2.desktop</launchable>
   <url type="homepage">https://github.com/zc7ryr6ms4-eng/thisismade-CDP-1</url>
   <screenshots>
     <screenshot type="default">

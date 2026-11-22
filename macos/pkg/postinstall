@@ -1,18 +1,18 @@
 #!/bin/bash
-# Thisismade CD Player – postinstall (läuft als root im macOS-Installer)
+# thisismade cdp-2 – postinstall (läuft als root im macOS-Installer)
 # 1. installiert bei Bedarf Apples Command Line Tools (Swift-Compiler)
 # 2. kompiliert die App aus dem mitgelieferten Quellcode
 # 3. legt sie nach /Applications
 set -u
-APP_NAME="Thisismade CD Player"
+APP_NAME="thisismade cdp-2"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 WORK="$(mktemp -d /private/tmp/thisismade-build.XXXXXX)"
-LOG="/private/tmp/thisismade-cd-player-install.log"
+LOG="/private/tmp/thisismade-cdp-2-install.log"
 exec > >(tee "$LOG") 2>&1
 export HOME="$WORK/home" TMPDIR="$WORK/tmp"
 mkdir -p "$HOME" "$TMPDIR"
 
-echo "== Thisismade CD Player: Installation $(date)"
+echo "== thisismade cdp-2: Installation $(date)"
 sw_vers
 
 have_swift() { /usr/bin/xcrun --find swiftc >/dev/null 2>&1; }

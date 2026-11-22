@@ -17,7 +17,7 @@ import time
 import zlib
 from xml.sax.saxutils import escape
 
-PKG_ID = "io.github.thisismade.CDPlayer.pkg"
+PKG_ID = "io.github.thisismade.cdp2.pkg"
 VERSION = "1.0.0"
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -121,7 +121,7 @@ def main(macos_dir, out):
 
     distribution = f'''<?xml version="1.0" encoding="utf-8"?>
 <installer-gui-script minSpecVersion="2">
-    <title>Thisismade CD Player</title>
+    <title>thisismade cdp-2</title>
     <welcome file="welcome.html" mime-type="text/html"/>
     <conclusion file="conclusion.html" mime-type="text/html"/>
     <options customize="never" require-scripts="false" hostArchitectures="x86_64,arm64"/>

@@ -3,10 +3,10 @@
 <plist version="1.0">
 <dict>
   <key>CFBundleDevelopmentRegion</key><string>de</string>
-  <key>CFBundleExecutable</key><string>ThisismadeCDPlayer</string>
-  <key>CFBundleIdentifier</key><string>io.github.thisismade.CDPlayer</string>
-  <key>CFBundleName</key><string>Thisismade CD Player</string>
-  <key>CFBundleDisplayName</key><string>Thisismade CD Player</string>
+  <key>CFBundleExecutable</key><string>thisismade-cdp-2</string>
+  <key>CFBundleIdentifier</key><string>io.github.thisismade.cdp2</string>
+  <key>CFBundleName</key><string>thisismade cdp-2</string>
+  <key>CFBundleDisplayName</key><string>thisismade cdp-2</string>
   <key>CFBundleIconFile</key><string>AppIcon</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>CFBundleShortVersionString</key><string>1.0.0</string>

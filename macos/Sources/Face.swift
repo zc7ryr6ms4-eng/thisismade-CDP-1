@@ -1,4 +1,4 @@
-// Gerätefront des Thisismade CD Player – CoreGraphics-Zeichnung und Klickflächen.
+// Gerätefront des thisismade cdp-2 – CoreGraphics-Zeichnung und Klickflächen.
 // Koordinaten: Geräteeinheiten, y nach unten (die View ist "flipped").
 import AppKit
 
@@ -379,7 +379,7 @@ enum Face {
         c.addRect(CGRect(x: 18, y: 1, width: devW - 36, height: 1.2)); fill(c, RGB(1, 1, 1), 0.9)
 
         text(c, "thisismade", 40, 42, 24, RGB(0.12, 0.12, 0.13), align: .left, bold: true)
-        text(c, "CD PLAYER  ·  CDP-01", 184, 41, 12, txtDim, align: .left)
+        text(c, "CD PLAYER  ·  CDP-2", 184, 41, 12, txtDim, align: .left)
 
         let cx = discC.x, cy = discC.y
         circle(c, cx, cy, wellR + 3); fill(c, RGB(0.80, 0.80, 0.81))

@@ -6,6 +6,7 @@ import math
 import os
 import random
 import re
+import shutil
 import sys
 import time
 from types import SimpleNamespace
@@ -28,7 +29,7 @@ SKIN_NAMES = {"minimal": "nInInAL", "brick": "bAUStEInE", "classic": "CLASSIC"}
 from .engine import Engine, probe_cd  # noqa: E402
 from .mpris import Mpris  # noqa: E402
 
-APP_ID = "io.github.thisismade.CDPlayer"
+APP_ID = "io.github.thisismade.cdp2"
 APP_NAME = "thisismade cdp-2"
 VERSION = "1.0.0"
 
@@ -58,13 +59,19 @@ def _natkey(s):
 
 
 def _config_dir():
-    d = os.path.join(GLib.get_user_config_dir(), "thisismade-cd-player")
+    d = os.path.join(GLib.get_user_config_dir(), "thisismade-cdp-2")
+    old = os.path.join(GLib.get_user_config_dir(), "thisismade-cd-player")   # Vorversion
+    if not os.path.isdir(d) and os.path.isdir(old):
+        try:
+            shutil.copytree(old, d)
+        except OSError:
+            pass
     os.makedirs(d, exist_ok=True)
     return d
 
 
 def _cache_dir():
-    d = os.path.join(GLib.get_user_cache_dir(), "thisismade-cd-player")
+    d = os.path.join(GLib.get_user_cache_dir(), "thisismade-cdp-2")
     os.makedirs(d, exist_ok=True)
     return d
 

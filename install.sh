@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Thisismade CD Player – Installer für Ubuntu
+# thisismade cdp-2 – Installer für Ubuntu
 #
 #   wget -qO- https://raw.githubusercontent.com/zc7ryr6ms4-eng/thisismade-CDP-1/main/install.sh | bash
 #
@@ -18,12 +18,12 @@ if ! command -v apt-get >/dev/null; then
   exit 1
 fi
 
-DEB="$(ls "$HERE"/thisismade-cd-player_*_all.deb "$HERE"/dist/thisismade-cd-player_*_all.deb 2>/dev/null | sort -V | tail -1 || true)"
+DEB="$(ls "$HERE"/thisismade-cdp-2_*_all.deb "$HERE"/dist/thisismade-cdp-2_*_all.deb 2>/dev/null | sort -V | tail -1 || true)"
 
 if [[ -z "$DEB" && -f "$HERE/build-deb.sh" ]]; then
   echo "==> Baue Paket aus dem Quellordner"
   bash "$HERE/build-deb.sh"
-  DEB="$(ls "$HERE"/dist/thisismade-cd-player_*_all.deb | sort -V | tail -1)"
+  DEB="$(ls "$HERE"/dist/thisismade-cdp-2_*_all.deb | sort -V | tail -1)"
 fi
 
 if [[ -z "$DEB" ]]; then
@@ -46,4 +46,4 @@ sudo apt-get install -y "$TMP/pkg.deb"
 
 echo
 echo "Fertig! „thisismade cdp-2“ findest du jetzt in der GNOME-Übersicht."
-echo "Im Terminal: thisismade-cd-player [Ordner oder Dateien]"
+echo "Im Terminal: thisismade-cdp-2 [Ordner oder Dateien]"

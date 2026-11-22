@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Thisismade CD Player – Installer für macOS
+# thisismade cdp-2 – Installer für macOS
 #
 #   curl -fsSL https://raw.githubusercontent.com/zc7ryr6ms4-eng/thisismade-CDP-1/main/install-mac.sh | bash
 #
@@ -8,7 +8,7 @@
 # (dafür werden die Xcode Command Line Tools benötigt).
 set -euo pipefail
 REPO="zc7ryr6ms4-eng/thisismade-CDP-1"
-NAME="Thisismade CD Player"
+NAME="thisismade cdp-2"
 TMP="$(mktemp -d)"
 trap 'hdiutil detach "$TMP/mnt" -quiet 2>/dev/null || true; rm -rf "$TMP"' EXIT
 

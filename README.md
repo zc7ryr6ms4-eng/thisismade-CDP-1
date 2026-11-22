@@ -1,6 +1,6 @@
-# Thisismade CD Player
+# thisismade cdp-2
 
-![Thisismade CD Player](data/screenshot.png)
+![thisismade cdp-2](data/screenshot.png)
 
 Unter Linux gibt es drei Designs (Rechtsklick → „Design wechseln“) – Minimal in Weiß/Orange (Standard), Bausteine und Klassisch:
 
@@ -18,8 +18,8 @@ Unter [**Releases**](../../releases/latest) liegen fertige Pakete:
 
 | Paket | So installierst du es |
 |---|---|
-| `thisismade-cd-player_*_all.deb` | doppelt anklicken (App-Zentrum) oder `sudo apt install ./thisismade-cd-player_*_all.deb` |
-| `thisismade-cd-player_*.snap` (nur Wayland, kein X11) | `sudo snap install --dangerous ./thisismade-cd-player_*.snap` |
+| `thisismade-cdp-2_*_all.deb` | doppelt anklicken (App-Zentrum) oder `sudo apt install ./thisismade-cdp-2_*_all.deb` |
+| `thisismade-cdp-2_*.snap` (nur Wayland, kein X11) | `sudo snap install --dangerous ./thisismade-cdp-2_*.snap` |
 
 Oder alles mit einem Befehl – lädt die neueste Version und installiert sie samt Abhängigkeiten:
 
@@ -27,27 +27,27 @@ Oder alles mit einem Befehl – lädt die neueste Version und installiert sie sa
 wget -qO- https://raw.githubusercontent.com/zc7ryr6ms4-eng/thisismade-CDP-1/main/install.sh | bash
 ```
 
-Danach: **Thisismade CD Player** in der GNOME-Übersicht, oder `thisismade-cd-player ~/Musik` im Terminal.
-Entfernen: `sudo apt remove thisismade-cd-player` bzw. `sudo snap remove thisismade-cd-player`.
+Danach: **thisismade cdp-2** in der GNOME-Übersicht, oder `thisismade-cdp-2 ~/Musik` im Terminal.
+Entfernen: `sudo apt remove thisismade-cdp-2` bzw. `sudo snap remove thisismade-cdp-2`.
 
 ### Windows 11 (und Windows 10)
 
-`ThisismadeCDPlayer-Setup-1.0.0.exe` aus dem [neuesten Release](../../releases/latest) herunterladen und
+`thisismade-cdp-2-Setup-1.0.0.exe` aus dem [neuesten Release](../../releases/latest) herunterladen und
 starten – der Installer legt den Player im Startmenü an (optional auf dem Desktop) und trägt ihn unter
 „Öffnen mit“ für Audiodateien und im Ordner-Kontextmenü ein. Kein .NET nötig, alles ist enthalten.
 Weil das Setup nicht kostenpflichtig signiert ist, zeigt Windows SmartScreen beim ersten Start
 „Der Computer wurde durch Windows geschützt“ → **Weitere Informationen** → **Trotzdem ausführen**.
-Ohne Installation: `ThisismadeCDPlayer-portable-win-x64.zip` entpacken und die .exe starten.
+Ohne Installation: `thisismade-cdp-2-portable-win-x64.zip` entpacken und die .exe starten.
 
 ### macOS (13 Ventura und neuer, Apple Silicon + Intel)
 
-`ThisismadeCDPlayer-1.0.0.pkg` aus dem Release doppelklicken (fertig kompiliert) – oder:
+`thisismade-cdp-2-1.0.0.pkg` aus dem Release doppelklicken (fertig kompiliert) – oder:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/zc7ryr6ms4-eng/thisismade-CDP-1/main/install-mac.sh | bash
 ```
 
-Lädt die App, legt sie in **Programme** und startet sie. Alternativ `ThisismadeCDPlayer.dmg` aus dem
+Lädt die App, legt sie in **Programme** und startet sie. Alternativ `thisismade-cdp-2.dmg` aus dem
 Release öffnen und die App nach „Programme“ ziehen (beim ersten Start: Systemeinstellungen →
 Datenschutz & Sicherheit → „Dennoch öffnen“, da die App nicht notarisiert ist).
 Selbst bauen auf dem Mac: `xcode-select --install`, dann `bash macos/build.sh --install`.
