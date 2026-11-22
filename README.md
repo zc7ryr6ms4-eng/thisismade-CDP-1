@@ -2,7 +2,7 @@
 
 ![Thisismade CD Player](data/screenshot.png)
 
-Ein Musikplayer für **Ubuntu/GNOME** und **macOS**, der wie ein professionelles CD-Deck funktioniert:
+Ein Musikplayer für **Windows 11**, **macOS** und **Ubuntu/GNOME**, der wie ein professionelles CD-Deck funktioniert:
 drehende Disc zum Scratchen, rotes LED-Display mit Pegelanzeige, Tempo-Fader mit Key Lock,
 drei Memory-Cues, Shuttle-Suchlauf, Ziffernblock für die direkte Titelwahl, Wiederholen und Zufall.
 
@@ -24,7 +24,18 @@ wget -qO- https://raw.githubusercontent.com/zc7ryr6ms4-eng/thisismade-CDP-1/main
 Danach: **Thisismade CD Player** in der GNOME-Übersicht, oder `thisismade-cd-player ~/Musik` im Terminal.
 Entfernen: `sudo apt remove thisismade-cd-player` bzw. `sudo snap remove thisismade-cd-player`.
 
+### Windows 11 (und Windows 10)
+
+`ThisismadeCDPlayer-Setup-1.0.0.exe` aus dem [neuesten Release](../../releases/latest) herunterladen und
+starten – der Installer legt den Player im Startmenü an (optional auf dem Desktop) und trägt ihn unter
+„Öffnen mit“ für Audiodateien und im Ordner-Kontextmenü ein. Kein .NET nötig, alles ist enthalten.
+Weil das Setup nicht kostenpflichtig signiert ist, zeigt Windows SmartScreen beim ersten Start
+„Der Computer wurde durch Windows geschützt“ → **Weitere Informationen** → **Trotzdem ausführen**.
+Ohne Installation: `ThisismadeCDPlayer-portable-win-x64.zip` entpacken und die .exe starten.
+
 ### macOS (13 Ventura und neuer, Apple Silicon + Intel)
+
+`ThisismadeCDPlayer-1.0.0.pkg` aus dem Release doppelklicken (fertig kompiliert) – oder:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/zc7ryr6ms4-eng/thisismade-CDP-1/main/install-mac.sh | bash
@@ -71,6 +82,7 @@ Jeder Push wird auf GitHub Actions mit echtem GTK4 und GStreamer getestet
 
 * `tmplayer/` – Linux-Version (Python, GTK4, GStreamer)
 * `macos/` – macOS-Version (Swift, AppKit, AVFoundation), `macos/build.sh`
+* `windows/` – Windows-Version (C#/.NET 8, WinForms, NAudio), `windows/installer.iss`
 * `snap/`, `build-deb.sh` – Pakete für Ubuntu
 * `install.sh`, `install-mac.sh` – Ein-Befehl-Installer
 
