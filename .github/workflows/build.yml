@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
     tags: ["v*"]
+  release:
+    types: [published]     # Release auf GitHub veröffentlichen → alle Installer werden angehängt
   pull_request:
   workflow_dispatch:
 
@@ -158,8 +160,10 @@ jobs:
       - name: Release veröffentlichen
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.ref_name }}
           name: Thisismade CD Player ${{ github.ref_name }}
           body_path: RELEASE_NOTES.md
+          fail_on_unmatched_files: false
           files: |
             artifacts/deb/*.deb
             artifacts/snap/*.snap
