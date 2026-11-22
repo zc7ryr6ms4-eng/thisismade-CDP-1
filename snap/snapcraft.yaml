@@ -1,0 +1,53 @@
+name: thisismade-cd-player
+base: core24
+version: '1.0.0'
+title: Thisismade CD Player
+summary: CD player software with tempo, key lock, memory cues and shuttle
+description: |
+  A music player for GNOME that works like a professional CD deck: a spinning
+  disc you can scratch, a display with level meter, tempo fader with key lock,
+  three memory cues, shuttle search, direct track entry, repeat and shuffle.
+  Plays folders, files, playlists and audio CDs and integrates with the GNOME
+  media controls (MPRIS).
+license: BSD-3-Clause
+icon: data/io.github.thisismade.CDPlayer.svg
+grade: stable
+confinement: strict
+
+slots:
+  mpris:
+    interface: mpris
+    name: thisismade_cdplayer
+
+apps:
+  thisismade-cd-player:
+    command: usr/bin/thisismade-cd-player
+    desktop: usr/share/applications/io.github.thisismade.CDPlayer.desktop
+    common-id: io.github.thisismade.CDPlayer
+    extensions: [gnome]
+    plugs: [home, removable-media, audio-playback, optical-drive, network]
+    slots: [mpris]
+    environment:
+      PYTHONPATH: $SNAP/usr/share/thisismade-cd-player:$SNAP/usr/lib/python3/dist-packages
+      GST_PLUGIN_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/gstreamer-1.0
+
+parts:
+  app:
+    plugin: dump
+    source: .
+    organize:
+      tmplayer: usr/share/thisismade-cd-player/tmplayer
+      data/thisismade-cd-player: usr/bin/thisismade-cd-player
+      data/io.github.thisismade.CDPlayer.desktop: usr/share/applications/io.github.thisismade.CDPlayer.desktop
+      data/io.github.thisismade.CDPlayer.svg: usr/share/icons/hicolor/scalable/apps/io.github.thisismade.CDPlayer.svg
+      data/io.github.thisismade.CDPlayer.metainfo.xml: usr/share/metainfo/io.github.thisismade.CDPlayer.metainfo.xml
+    stage:
+      - usr
+    stage-packages:
+      - python3-gi
+      - python3-gi-cairo
+      - python3-cairo
+      - gstreamer1.0-plugins-good
+      - gstreamer1.0-plugins-bad
+      - gstreamer1.0-libav
+      - gstreamer1.0-pulseaudio

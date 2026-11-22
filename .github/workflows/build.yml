@@ -1,0 +1,116 @@
+name: Build & Release
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  GSK_RENDERER: cairo
+
+jobs:
+  test:
+    name: Selbsttest (Ubuntu 24.04, echtes GTK4 + GStreamer)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Abhängigkeiten
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-gi python3-gi-cairo python3-cairo gir1.2-gtk-4.0 \
+            gir1.2-gstreamer-1.0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
+            gstreamer1.0-plugins-bad xvfb dbus-x11 fonts-inter
+      - name: Testton erzeugen
+        run: python3 tests/make_tone.py "$RUNNER_TEMP/tone.wav"
+      - name: Player starten, abspielen, Tempo + Cue prüfen, Screenshot
+        run: |
+          TMPLAYER_SELFTEST="$RUNNER_TEMP/tone.wav" TMPLAYER_SCREENSHOT="$PWD/screenshot-ci.png" \
+            timeout 60 dbus-run-session -- xvfb-run -a python3 -m tmplayer
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screenshot
+          path: screenshot-ci.png
+
+  deb:
+    name: .deb-Paket
+    needs: test
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Metadaten prüfen
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y desktop-file-utils appstream
+          desktop-file-validate data/io.github.thisismade.CDPlayer.desktop
+          appstreamcli validate --no-net --pedantic data/io.github.thisismade.CDPlayer.metainfo.xml || true
+      - name: Bauen
+        run: bash build-deb.sh
+      - name: Installation testen
+        run: |
+          sudo apt-get install -y ./dist/*.deb xvfb dbus-x11
+          python3 tests/make_tone.py "$RUNNER_TEMP/tone.wav"
+          TMPLAYER_SELFTEST="$RUNNER_TEMP/tone.wav" TMPLAYER_SCREENSHOT="$RUNNER_TEMP/s.png" \
+            timeout 60 dbus-run-session -- xvfb-run -a thisismade-cd-player
+      - uses: actions/upload-artifact@v4
+        with:
+          name: deb
+          path: dist/*.deb
+
+  snap:
+    name: Snap
+    needs: test
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: snapcore/action-build@v1
+        id: build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: snap
+          path: ${{ steps.build.outputs.snap }}
+
+  macos:
+    name: macOS-App (Universal, .dmg)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bauen
+        run: bash macos/build.sh --dmg
+      - name: Start-Test (App startet und läuft 5 s)
+        run: |
+          "macos/build/Thisismade CD Player.app/Contents/MacOS/ThisismadeCDPlayer" &
+          PID=$!
+          sleep 5
+          kill -0 $PID
+          kill $PID
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dmg
+          path: macos/build/*.dmg
+
+  release:
+    name: GitHub-Release
+    if: always() && startsWith(github.ref, 'refs/tags/v') && needs.deb.result == 'success'
+    needs: [deb, snap, macos]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Release veröffentlichen
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Thisismade CD Player ${{ github.ref_name }}
+          body_path: RELEASE_NOTES.md
+          files: |
+            artifacts/deb/*.deb
+            artifacts/snap/*.snap
+            artifacts/dmg/*.dmg
+            install.sh
+            install-mac.sh

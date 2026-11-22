@@ -1,1 +1,77 @@
-# thisismade-CDP-1
+# Thisismade CD Player
+
+![Thisismade CD Player](data/screenshot.png)
+
+Ein Musikplayer für **Ubuntu/GNOME** und **macOS**, der wie ein professionelles CD-Deck funktioniert:
+drehende Disc zum Scratchen, rotes LED-Display mit Pegelanzeige, Tempo-Fader mit Key Lock,
+drei Memory-Cues, Shuttle-Suchlauf, Ziffernblock für die direkte Titelwahl, Wiederholen und Zufall.
+
+## Installieren
+
+Unter [**Releases**](../../releases/latest) liegen fertige Pakete:
+
+| Paket | So installierst du es |
+|---|---|
+| `thisismade-cd-player_*_all.deb` | doppelt anklicken (App-Zentrum) oder `sudo apt install ./thisismade-cd-player_*_all.deb` |
+| `thisismade-cd-player_*.snap` | `sudo snap install --dangerous ./thisismade-cd-player_*.snap` |
+
+Oder alles mit einem Befehl – lädt die neueste Version und installiert sie samt Abhängigkeiten:
+
+```bash
+wget -qO- https://raw.githubusercontent.com/zc7ryr6ms4-eng/thisismade-CDP-1/main/install.sh | bash
+```
+
+Danach: **Thisismade CD Player** in der GNOME-Übersicht, oder `thisismade-cd-player ~/Musik` im Terminal.
+Entfernen: `sudo apt remove thisismade-cd-player` bzw. `sudo snap remove thisismade-cd-player`.
+
+### macOS (13 Ventura und neuer, Apple Silicon + Intel)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/zc7ryr6ms4-eng/thisismade-CDP-1/main/install-mac.sh | bash
+```
+
+Lädt die App, legt sie in **Programme** und startet sie. Alternativ `ThisismadeCDPlayer.dmg` aus dem
+Release öffnen und die App nach „Programme“ ziehen (beim ersten Start: Systemeinstellungen →
+Datenschutz & Sicherheit → „Dennoch öffnen“, da die App nicht notarisiert ist).
+Selbst bauen auf dem Mac: `xcode-select --install`, dann `bash macos/build.sh --install`.
+
+Die Mac-Version ist eine native Swift-App (AppKit + AVFoundation): Tempo und Key Lock laufen
+über AVAudioEngine ohne Aussetzer, Medientasten und Kontrollzentrum funktionieren, Audio-CDs
+werden über das CD-Laufwerk in /Volumes gelesen.
+
+## Funktionen
+
+- **Laden:** OPEN (Ordner inkl. Unterordner), FILES (Dateien, .m3u-Playlists), CD (Audio-CD), Drag & Drop
+- **Laufwerk:** Play/Pause, Stop, Titel vor/zurück, Klick auf die Disc = Play/Pause, Disc drehen = scratchen
+- **Tempo:** 50–150 %; **Key Lock** aus = Tempo + Tonhöhe (Varispeed), an = nur Tempo (Time Stretch)
+- **Memory A/B/C:** Merkpunkte setzen, anspringen, löschen – pro Titel gespeichert
+- **Shuttle:** Rück-/Vorlauf bis 16-fach
+- **Ziffernblock:** Titelnummer + ENTER, TIME (Restzeit), CLR
+- **Display:** Titel, Anzahl, Zeit, Tempo, Lautstärke, Pegel L/R, Statusanzeigen
+- **GNOME:** Medientasten, Sperrbildschirm und Mediensteuerung (MPRIS), kein Ruhezustand während der Wiedergabe
+- Lückenlose Wiedergabe, Cover-Art auf der Disc, setzt beim nächsten Start an der letzten Stelle fort
+
+Alle Tastenkürzel: im Player **F1** oder **HELP**.
+
+Formate: alles, was GStreamer abspielt – MP3, FLAC, OGG, Opus, WAV, AIFF, M4A/AAC, WMA, APE, WavPack u. a.
+
+## Aus dem Quellcode
+
+```bash
+sudo apt install python3-gi python3-gi-cairo gir1.2-gtk-4.0 gir1.2-gstreamer-1.0 \
+     gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-libav
+python3 -m tmplayer ~/Musik        # direkt starten
+bash build-deb.sh                  # .deb nach dist/ bauen
+```
+
+Jeder Push wird auf GitHub Actions mit echtem GTK4 und GStreamer getestet
+(Abspielen, Tempo, Cue, Screenshot); ein Tag `v*` baut .deb und Snap und veröffentlicht ein Release.
+
+## Projektaufbau
+
+* `tmplayer/` – Linux-Version (Python, GTK4, GStreamer)
+* `macos/` – macOS-Version (Swift, AppKit, AVFoundation), `macos/build.sh`
+* `snap/`, `build-deb.sh` – Pakete für Ubuntu
+* `install.sh`, `install-mac.sh` – Ein-Befehl-Installer
+
+Lizenz: BSD 3-Clause (siehe LICENSE)
