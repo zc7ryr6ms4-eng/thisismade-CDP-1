@@ -21,8 +21,10 @@ from gi.repository import Gdk, GdkPixbuf, Gio, GLib, Gtk  # noqa: E402
 
 from . import face  # noqa: E402
 from . import face_brick  # noqa: E402
+from . import face_minimal  # noqa: E402
 
-SKINS = {"brick": face_brick, "classic": face}
+SKINS = {"minimal": face_minimal, "brick": face_brick, "classic": face}
+SKIN_NAMES = {"minimal": "nInInAL", "brick": "bAUStEInE", "classic": "CLASSIC"}
 from .engine import Engine, probe_cd  # noqa: E402
 from .mpris import Mpris  # noqa: E402
 
@@ -81,7 +83,7 @@ class PlayerApp(Gtk.Application):
         super().__init__(application_id=APP_ID, flags=Gio.ApplicationFlags.HANDLES_OPEN)
         GLib.set_application_name(APP_NAME)
         self.win = None
-        self.skin = face_brick
+        self.skin = face_minimal
         self.engine = None
         self.mpris = None
         self.tracks = []            # [{uri, title, artist, album, ...}]
@@ -252,7 +254,7 @@ class PlayerApp(Gtk.Application):
         self.time_mode = int(s.get("time_mode", 0))
         self.cues = {k: v for k, v in s.get("cues", {}).items() if isinstance(v, list) and len(v) == 3}
         self.zoom = float(s.get("zoom", 0.0))
-        self.skin = SKINS.get(s.get("skin", "brick"), face_brick)
+        self.skin = SKINS.get(s.get("skin", "minimal"), face_minimal)
 
     def _save_settings(self):
         s = {
@@ -261,7 +263,7 @@ class PlayerApp(Gtk.Application):
             "stretch": self.engine.stretch if self.engine else False,
             "cues": {k: v for k, v in self.cues.items() if any(x is not None for x in v)},
             "zoom": self.win.current_zoom() if self.win else self.zoom,
-            "skin": "brick" if self.skin is face_brick else "classic",
+            "skin": next(k for k, v in SKINS.items() if v is self.skin),
             "uris": [t["uri"] for t in self.tracks if t["uri"].startswith("file://")][:5000],
             "index": self.index,
             "position": int(self.engine.position()) if self.engine else 0,
@@ -517,8 +519,11 @@ class PlayerApp(Gtk.Application):
         self.flash("ELAPSEd" if self.time_mode == 0 else "rEnAIn", 0.8)
 
     def toggle_skin(self):
-        self.skin = face if self.skin is face_brick else face_brick
-        self.flash("bAUStEInE" if self.skin is face_brick else "CLASSIC", 0.8)
+        keys = list(SKINS)
+        cur = next(k for k, v in SKINS.items() if v is self.skin)
+        nxt = keys[(keys.index(cur) + 1) % len(keys)]
+        self.skin = SKINS[nxt]
+        self.flash(SKIN_NAMES[nxt], 0.8)
         self.redraw()
 
     def toggle_stretch(self):
@@ -978,7 +983,7 @@ class PlayerWindow(Gtk.ApplicationWindow):
         sec.append("Wiederholen umschalten", "app.repeat")
         sec.append("Zufall umschalten", "app.shuffle")
         sec.append("Varispeed / Time Stretch", "app.stretch")
-        sec.append("Design: Bausteine / Klassisch", "app.skin")
+        sec.append("Design wechseln (Minimal / Bausteine / Klassisch)", "app.skin")
         menu.append_section(None, sec)
         sec = Gio.Menu()
         sec.append("Bedienung", "app.help")
@@ -1453,7 +1458,7 @@ KEY LOCK an = nur das Tempo ändert sich, die Tonhöhe bleibt (Time Stretch).
 <b>Display</b> TRACK = aktueller Titel · TOTAL = Anzahl Titel · TIME = Minuten:Sekunden.
 Rechts leuchten REPEAT, SHUFFLE, KEY LOCK, PAUSE und REMAIN (Restzeit). Klick aufs Display: Zeitmodus.
 
-<b>Design</b> Rechtsklick → „Design: Bausteine / Klassisch“ wechselt zwischen Baustein-Look und weißer Front.
+<b>Design</b> Rechtsklick → „Design wechseln“: Minimal (Schwarz/Orange), Bausteine (Weiß/Rot) oder Klassisch (Weiß).
 
 <b>Oben</b> <b>OUTPUT</b> öffnet die GNOME-Klangeinstellungen (Ausgabegerät) · <b>HELP</b> diese Hilfe ·
 <b>POWER</b> Standby, gedrückt halten = Beenden · <b>MEDIA</b>-LED: mit der GNOME-Mediensteuerung verbunden

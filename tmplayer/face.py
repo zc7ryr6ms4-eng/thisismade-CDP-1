@@ -186,9 +186,9 @@ def _digit(cr, x, y, w, h, ch, on_col=VFD_ON, off_col=VFD_OFF):
         cr.fill()
 
 
-def _digits(cr, text, x, y, w, h, pitch):
+def _digits(cr, text, x, y, w, h, pitch, on_col=None, off_col=None):
     for i, c in enumerate(text):
-        _digit(cr, x + i * pitch, y, w, h, c)
+        _digit(cr, x + i * pitch, y, w, h, c, on_col or VFD_ON, off_col or VFD_OFF)
 
 
 # ----------------------------------------------------------------- Bauteile
@@ -539,29 +539,31 @@ def draw_dynamic(cr, st):
         cr.fill()
 
 
-def _display(cr, st):
+def _display(cr, st, on_col=None, off_col=None, hot_on=(1.0, 0.62, 0.14), hot_off=(0.20, 0.11, 0.03)):
+    on_col = on_col or VFD_ON
+    off_col = off_col or VFD_OFF
     x, y, w, h = DISPLAY
     on = st.power_on
-    L = (lambda c: VFD_ON if (c and on) else VFD_OFF)
+    L = (lambda c: on_col if (c and on) else off_col)
     dw, dh, pitch = 26, 46, 34
     if not on:
         main = " " * 12
     else:
         main = (st.main_text + " " * 12)[:12]
     if on and getattr(st, "msg_mode", False):
-        _digits(cr, main, x + 18, y + 38, dw, dh, pitch)
+        _digits(cr, main, x + 18, y + 38, dw, dh, pitch, on_col, off_col)
     else:
         _text(cr, "TRACK", x + 18, y + 26, 10, L(True), align="left")
         _text(cr, "TOTAL", x + 136, y + 26, 10, L(True), align="left")
         _text(cr, "TIME", x + 254, y + 26, 10, L(True), align="left")
-        _digits(cr, main[0:3], x + 18, y + 38, dw, dh, pitch)
-        _digits(cr, main[3:6], x + 136, y + 38, dw, dh, pitch)
-        _digits(cr, main[6:9], x + 254, y + 38, dw, dh, pitch)
+        _digits(cr, main[0:3], x + 18, y + 38, dw, dh, pitch, on_col, off_col)
+        _digits(cr, main[3:6], x + 136, y + 38, dw, dh, pitch, on_col, off_col)
+        _digits(cr, main[6:9], x + 254, y + 38, dw, dh, pitch, on_col, off_col)
         for dy in (14, 32):
             _circle(cr, x + 362 + (46 - dy) * 0.08, y + 38 + dy, 3)
             _rgb(cr, L(True))
             cr.fill()
-        _digits(cr, main[10:12], x + 372, y + 38, dw, dh, pitch)
+        _digits(cr, main[10:12], x + 372, y + 38, dw, dh, pitch, on_col, off_col)
     # Anzeigen rechts
     ind = [("REPEAT" if st.repeat != 2 else "REPEAT 1", st.repeat > 0), ("SHUFFLE", st.shuffle),
            ("KEY LOCK", st.stretch), ("PAUSE", st.paused), ("REMAIN", st.remain)]
@@ -570,10 +572,10 @@ def _display(cr, st):
     # untere Zeile: Tempo, Lautstärke, Pegel
     by = y + 118
     _text(cr, "TEMPO", x + 18, by - 6, 10, L(True), align="left")
-    _digits(cr, st.vs_text if on else "   ", x + 18, by, 15, 26, 20)
+    _digits(cr, st.vs_text if on else "   ", x + 18, by, 15, 26, 20, on_col, off_col)
     _text(cr, "%", x + 84, by + 25, 12, L(True), align="left")
     _text(cr, "VOL", x + 110, by - 6, 10, L(True), align="left")
-    _digits(cr, st.lv_text if on else "   ", x + 110, by, 15, 26, 20)
+    _digits(cr, st.lv_text if on else "   ", x + 110, by, 15, 26, 20, on_col, off_col)
     mx = x + 200
     n = 30
     for row, val in enumerate((st.vu_l, st.vu_r)):
@@ -584,7 +586,7 @@ def _display(cr, st):
         for i in range(n):
             cr.rectangle(mx + 14 + i * 10.5, yy, 8, 10)
             hot = i >= n - 5
-            col = (1.0, 0.62, 0.14) if hot else VFD_ON
-            off = (0.20, 0.11, 0.03) if hot else VFD_OFF
+            col = hot_on if hot else on_col
+            off = hot_off if hot else off_col
             _rgb(cr, col if (i < lit or (pk and i == pk - 1)) else off)
             cr.fill()
