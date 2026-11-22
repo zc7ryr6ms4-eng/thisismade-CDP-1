@@ -1,7 +1,0 @@
-dist/
-__pycache__/
-*.pyc
-*.snap
-parts/
-stage/
-prime/
