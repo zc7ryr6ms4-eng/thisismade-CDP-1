@@ -2,6 +2,10 @@
 
 ![Thisismade CD Player](data/screenshot.png)
 
+Unter Linux gibt es zusätzlich ein Design im Baustein-Look (Rechtsklick → „Design: Bausteine / Klassisch“):
+
+![Baustein-Design](data/screenshot-brick.png)
+
 Ein Musikplayer für **Windows 11**, **macOS** und **Ubuntu/GNOME**, der wie ein professionelles CD-Deck funktioniert:
 drehende Disc zum Scratchen, rotes LED-Display mit Pegelanzeige, Tempo-Fader mit Key Lock,
 drei Memory-Cues, Shuttle-Suchlauf, Ziffernblock für die direkte Titelwahl, Wiederholen und Zufall.
