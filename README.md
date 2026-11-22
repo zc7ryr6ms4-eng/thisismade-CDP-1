@@ -2,7 +2,7 @@
 
 ![Thisismade CD Player](data/screenshot.png)
 
-Unter Linux gibt es drei Designs (Rechtsklick → „Design wechseln“) – Minimal in Schwarz/Orange (Standard), Bausteine und Klassisch:
+Unter Linux gibt es drei Designs (Rechtsklick → „Design wechseln“) – Minimal in Weiß/Orange (Standard), Bausteine und Klassisch:
 
 ![Minimal-Design](data/screenshot-minimal.png)
 

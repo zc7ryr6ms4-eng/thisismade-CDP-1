@@ -1,4 +1,4 @@
-"""Gerätefront im minimalistischen Industrie-Stil: Schwarz, Orange, feine Linien.
+"""Gerätefront im minimalistischen Industrie-Stil: Weiß, Orange, feine Linien.
 
 Flache Flächen, Punktraster, kleine technische Beschriftungen mit Nummern,
 runde Tasten. Gleiches Layout und gleiche Klickflächen wie face.py.
@@ -15,16 +15,16 @@ from .face import (CANVAS_H, CANVAS_W, DEV_H, DEV_W, DISC_C, DISC_R, DISPLAY, EN
 
 NAME = "minimal"
 
-BODY = (0.085, 0.085, 0.09)
-PANEL = (0.12, 0.12, 0.13)
-LINE = (0.30, 0.30, 0.32)
-DOT = (0.20, 0.20, 0.21)
-TXT = (0.86, 0.86, 0.86)
-TXT_DIM = (0.52, 0.52, 0.54)
-KEY = (0.17, 0.17, 0.18)
-KEY_HI = (0.23, 0.23, 0.24)
+BODY = (0.955, 0.955, 0.95)
+PANEL = (0.92, 0.92, 0.915)
+LINE = (0.74, 0.74, 0.75)
+DOT = (0.80, 0.80, 0.81)
+TXT = (0.12, 0.12, 0.13)
+TXT_DIM = (0.50, 0.50, 0.52)
+KEY = (0.985, 0.985, 0.98)
+KEY_HI = (0.90, 0.90, 0.90)
 ORANGE = (1.0, 0.40, 0.0)
-ORANGE_DIM = (0.28, 0.12, 0.03)
+ORANGE_DIM = (0.86, 0.80, 0.75)
 SEG_ON = (1.0, 0.45, 0.05)
 SEG_OFF = (0.17, 0.075, 0.02)
 MONO = "monospace"
@@ -86,12 +86,12 @@ def draw(cr, st):
 def draw_static(cr):
     # Gehäuse: eine flache schwarze Platte
     _rrect(cr, 0, 6, DEV_W, DEV_H, 14)
-    _rgb(cr, (0, 0, 0), 0.45)
+    _rgb(cr, (0, 0, 0), 0.18)
     cr.fill()
     _rrect(cr, 0, 0, DEV_W, DEV_H, 14)
     _rgb(cr, BODY)
     cr.fill_preserve()
-    _stroke(cr, (0.22, 0.22, 0.23), 1.2)
+    _stroke(cr, (0.80, 0.80, 0.81), 1.2)
 
     # Punktraster auf der linken Hälfte
     for j in range(13, int(DEV_H) - 8, 16):
@@ -120,12 +120,12 @@ def draw_static(cr):
     # Teller: flache Mulde mit Rillen
     cx, cy = DISC_C
     _circle(cr, cx, cy, WELL_R)
-    _rgb(cr, (0.045, 0.045, 0.05))
+    _rgb(cr, (0.90, 0.90, 0.895))
     cr.fill_preserve()
     _stroke(cr, LINE, 1.0)
     for rr in range(80, int(WELL_R) - 6, 18):
         _circle(cr, cx, cy, rr)
-        _stroke(cr, (0.11, 0.11, 0.12), 1.0)
+        _stroke(cr, (0.84, 0.84, 0.84), 1.0)
     for k in range(12):
         a = 2 * math.pi * k / 12
         _line(cr, cx + math.cos(a) * (WELL_R - 10), cy + math.sin(a) * (WELL_R - 10),
@@ -134,9 +134,9 @@ def draw_static(cr):
     # Display
     x, y, w, h = DISPLAY
     _rrect(cr, x - 4, y - 4, w + 8, h + 8, 8)
-    _rgb(cr, (0.02, 0.02, 0.02))
+    _rgb(cr, (0.06, 0.05, 0.045))
     cr.fill_preserve()
-    _stroke(cr, LINE, 1.0)
+    _stroke(cr, (0.55, 0.55, 0.56), 1.0)
 
     # Nummerierte Beschriftungen
     for t, tx, ty in (("01  NUMBER", 630, 266), ("02  VOLUME", 1086, 266), ("03  MEMORY", 630, 406),
@@ -234,13 +234,13 @@ def draw_dynamic(cr, st):
 
     if not on:
         _rrect(cr, 0, 0, DEV_W, DEV_H, 14)
-        _rgb(cr, (0, 0, 0), 0.35)
+        _rgb(cr, (0, 0, 0), 0.12)
         cr.fill()
 
 
 def _spindle(cr):
     _circle(cr, 0, 0, 26)
-    _rgb(cr, (0.16, 0.16, 0.17))
+    _rgb(cr, (0.86, 0.86, 0.86))
     cr.fill_preserve()
     _stroke(cr, LINE, 1.0)
     _circle(cr, 0, 0, 7)
@@ -253,9 +253,13 @@ def _disc(cr, st):
     cr.save()
     cr.translate(cx, cy)
     cr.rotate(st.disc_angle)
-    _circle(cr, 0, 0, DISC_R)
-    _rgb(cr, (0.86, 0.86, 0.85))
+    _circle(cr, 0, 2, DISC_R)
+    _rgb(cr, (0, 0, 0), 0.10)
     cr.fill()
+    _circle(cr, 0, 0, DISC_R)
+    _rgb(cr, (0.995, 0.995, 0.99))
+    cr.fill_preserve()
+    _stroke(cr, LINE, 1.0)
     cover = getattr(st, "cover", None)
     if cover is not None:
         cr.save()
@@ -271,7 +275,7 @@ def _disc(cr, st):
         ink = (0.10, 0.10, 0.11)
         for rr in (DISC_R - 14, HUB_R + 30):
             _circle(cr, 0, 0, rr)
-            _stroke(cr, (0.55, 0.55, 0.56), 1.0)
+            _stroke(cr, (0.80, 0.80, 0.81), 1.0)
         lines = st.disc_lines or []
         if lines:
             _text(cr, lines[0][:22].lower(), -150, -120, 22, ink, align="left", bold=True)
@@ -283,7 +287,7 @@ def _disc(cr, st):
         _rgb(cr, ORANGE)
         cr.fill()
     _circle(cr, 0, 0, HUB_R)
-    _rgb(cr, (0.12, 0.12, 0.13))
+    _rgb(cr, (0.93, 0.93, 0.93))
     cr.fill_preserve()
     _stroke(cr, LINE, 1.0)
     _spindle(cr)
@@ -319,7 +323,7 @@ def _fader(cr, value):
     _mono(cr, "-", x - 26, y1 + 2, 11, TXT_DIM)
     cy = y1 - max(0.0, min(1.0, value)) * (y1 - y0)
     cr.rectangle(x - 16, cy - 9, 32, 18)
-    _rgb(cr, (0.88, 0.88, 0.87))
+    _rgb(cr, (0.16, 0.16, 0.17))
     cr.fill()
     cr.rectangle(x - 16, cy - 1, 32, 2)
     _rgb(cr, ORANGE)

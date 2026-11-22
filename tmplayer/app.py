@@ -1458,7 +1458,7 @@ KEY LOCK an = nur das Tempo ändert sich, die Tonhöhe bleibt (Time Stretch).
 <b>Display</b> TRACK = aktueller Titel · TOTAL = Anzahl Titel · TIME = Minuten:Sekunden.
 Rechts leuchten REPEAT, SHUFFLE, KEY LOCK, PAUSE und REMAIN (Restzeit). Klick aufs Display: Zeitmodus.
 
-<b>Design</b> Rechtsklick → „Design wechseln“: Minimal (Schwarz/Orange), Bausteine (Weiß/Rot) oder Klassisch (Weiß).
+<b>Design</b> Rechtsklick → „Design wechseln“: Minimal (Weiß/Orange), Bausteine (Weiß/Rot) oder Klassisch (Weiß).
 
 <b>Oben</b> <b>OUTPUT</b> öffnet die GNOME-Klangeinstellungen (Ausgabegerät) · <b>HELP</b> diese Hilfe ·
 <b>POWER</b> Standby, gedrückt halten = Beenden · <b>MEDIA</b>-LED: mit der GNOME-Mediensteuerung verbunden
