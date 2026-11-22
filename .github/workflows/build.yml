@@ -88,15 +88,67 @@ jobs:
           sleep 5
           kill -0 $PID
           kill $PID
+      - name: Installationspaket (.pkg, fertig kompiliert)
+        run: |
+          pkgbuild --component "macos/build/Thisismade CD Player.app" --install-location /Applications \
+            --identifier io.github.thisismade.CDPlayer --version 1.0.0 macos/build/component.pkg
+          productbuild --package macos/build/component.pkg macos/build/ThisismadeCDPlayer-1.0.0.pkg
+          pkgutil --payload-files macos/build/ThisismadeCDPlayer-1.0.0.pkg | head -5
       - uses: actions/upload-artifact@v4
         with:
           name: dmg
           path: macos/build/*.dmg
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pkg
+          path: macos/build/ThisismadeCDPlayer-1.0.0.pkg
+
+  windows:
+    name: Windows 11 (Setup.exe)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Bauen (self-contained, eine .exe)
+        working-directory: windows
+        run: dotnet publish ThisismadeCDPlayer.csproj -c Release -o publish
+      - name: Selbsttest (abspielen, Tempo, Key Lock, Cue, Screenshot)
+        shell: pwsh
+        working-directory: windows
+        run: |
+          python ../tests/make_tone.py "$env:RUNNER_TEMP\tone.wav"
+          $env:TMPLAYER_SELFTEST = "$env:RUNNER_TEMP\tone.wav"
+          $env:TMPLAYER_SCREENSHOT = "$PWD\screenshot-windows.png"
+          $env:TMPLAYER_RESULT = "$PWD\selftest.txt"
+          $p = Start-Process -FilePath "publish\ThisismadeCDPlayer.exe" -PassThru
+          $null = $p.Handle
+          if (-not $p.WaitForExit(90000)) { $p.Kill(); Write-Error "Zeitüberschreitung"; exit 1 }
+          if (Test-Path selftest.txt) { Get-Content selftest.txt }
+          exit $p.ExitCode
+      - name: Installer bauen (Inno Setup)
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) { choco install innosetup -y --no-progress }
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /DAppVersion=1.0.0 windows\installer.iss
+          Compress-Archive -Path windows\publish\ThisismadeCDPlayer.exe, LICENSE -DestinationPath windows\output\ThisismadeCDPlayer-portable-win-x64.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: |
+            windows/output/*.exe
+            windows/output/*.zip
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshot-windows
+          path: windows/screenshot-windows.png
 
   release:
     name: GitHub-Release
     if: always() && startsWith(github.ref, 'refs/tags/v') && needs.deb.result == 'success'
-    needs: [deb, snap, macos]
+    needs: [deb, snap, macos, windows]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -112,5 +164,8 @@ jobs:
             artifacts/deb/*.deb
             artifacts/snap/*.snap
             artifacts/dmg/*.dmg
+            artifacts/pkg/*.pkg
+            artifacts/windows/*.exe
+            artifacts/windows/*.zip
             install.sh
             install-mac.sh
