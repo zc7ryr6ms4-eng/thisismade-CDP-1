@@ -25,8 +25,8 @@ KEY = (0.985, 0.985, 0.98)
 KEY_HI = (0.90, 0.90, 0.90)
 ORANGE = (1.0, 0.40, 0.0)
 ORANGE_DIM = (0.86, 0.80, 0.75)
-SEG_ON = (1.0, 0.45, 0.05)
-SEG_OFF = (0.17, 0.075, 0.02)
+SEG_ON = (1.0, 0.13, 0.08)
+SEG_OFF = (0.20, 0.04, 0.035)
 MONO = "monospace"
 
 
@@ -171,7 +171,7 @@ def draw_dynamic(cr, st):
         _mono(cr, "no disc", DISC_C[0], DISC_C[1] + 70, 13, TXT, "center")
         _mono(cr, "open / files / drop", DISC_C[0], DISC_C[1] + 90, 10, TXT_DIM, "center")
 
-    _display(cr, st, SEG_ON, SEG_OFF, (1.0, 0.85, 0.55), (0.18, 0.14, 0.08))
+    _display(cr, st, SEG_ON, SEG_OFF, (1.0, 0.62, 0.14), (0.20, 0.11, 0.03))
 
     # Ziffernblock: runde Tasten
     for lab, x, y in KEYS:
