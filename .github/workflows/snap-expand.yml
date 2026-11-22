@@ -1,0 +1,12 @@
+name: Snap-Konfiguration anzeigen
+on:
+  workflow_dispatch:
+  push:
+    paths: [".github/workflows/snap-expand.yml"]
+jobs:
+  expand:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo snap install snapcraft --classic
+      - run: snapcraft expand-extensions
