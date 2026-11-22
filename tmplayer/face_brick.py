@@ -1,4 +1,4 @@
-"""Gerätefront im Klemmbaustein-Stil (Grundplatte, Steine, Fliesen, Noppen).
+"""Gerätefront im Klemmbaustein-Stil: weiße Steine, rote Anzeigen und Akzente.
 
 Gleiches Layout und gleiche Klickflächen wie face.py – nur anders gezeichnet.
 """
@@ -20,7 +20,10 @@ YELLOW = (0.98, 0.79, 0.05)
 BLUE = (0.00, 0.33, 0.75)
 GREEN = (0.00, 0.57, 0.26)
 ORANGE = (1.00, 0.50, 0.00)
-WHITE = (0.96, 0.96, 0.95)
+WHITE = (0.965, 0.965, 0.955)
+BASE = (0.93, 0.93, 0.92)          # Grundplatte
+WELL = (0.84, 0.84, 0.85)          # runde Platte unter der Disc
+LABEL = (0.86, 0.86, 0.87)         # Beschriftungsfliesen
 BLACK = (0.13, 0.13, 0.14)
 DARK_GREY = (0.39, 0.40, 0.42)
 LIGHT_GREY = (0.63, 0.65, 0.68)
@@ -152,17 +155,17 @@ def draw_static(cr):
     _rgb(cr, (0, 0, 0), 0.30)
     cr.fill()
     _rrect(cr, 0, 0, DEV_W, DEV_H + 8, 10)
-    _rgb(cr, _shade(LIGHT_GREY, 0.70))
+    _rgb(cr, _shade(BASE, 0.78))
     cr.fill()
     _rrect(cr, 0, 0, DEV_W, DEV_H, 10)
-    _rgb(cr, LIGHT_GREY)
+    _rgb(cr, BASE)
     cr.fill()
     for j in range(int(DEV_H // PITCH)):
         for i in range(int(DEV_W // PITCH)):
             cx, cy = PITCH / 2 + i * PITCH, PITCH / 2 + j * PITCH
             if (cx - DISC_C[0]) ** 2 + (cy - DISC_C[1]) ** 2 < (WELL_R + 8) ** 2:
                 continue
-            stud(cr, cx, cy, LIGHT_GREY, 8.0)
+            stud(cr, cx, cy, BASE, 8.0)
 
     # Namensschild
     block(cr, 26, 14, 330, 44, WHITE)
@@ -175,15 +178,15 @@ def draw_static(cr):
     _rgb(cr, (0, 0, 0), 0.30)
     cr.fill()
     _circle(cr, cx, cy + 7, WELL_R)
-    _rgb(cr, _shade(DARK_GREY, 0.7))
+    _rgb(cr, _shade(WELL, 0.75))
     cr.fill()
     _circle(cr, cx, cy, WELL_R)
-    _rgb(cr, DARK_GREY)
+    _rgb(cr, WELL)
     cr.fill()
     n = 40
     for i in range(n):
         a = 2 * math.pi * i / n
-        stud(cr, cx + math.cos(a) * (WELL_R - 12), cy + math.sin(a) * (WELL_R - 12), DARK_GREY, 7.0)
+        stud(cr, cx + math.cos(a) * (WELL_R - 12), cy + math.sin(a) * (WELL_R - 12), WELL, 7.0)
 
     # Display-Rahmen (schwarzer Stein mit Noppenreihe)
     x, y, w, h = DISPLAY
@@ -201,7 +204,7 @@ def draw_static(cr):
     for t, tx, ty, tw in (("VOLUME", KNOB_C[0] - 40, KNOB_C[1] + KNOB_R + 12, 80),
                           ("MEMORY", 630, MEM_Y - 28, 90), ("SHUTTLE", SHUTTLE[0], MEM_Y - 28, 90),
                           ("TEMPO", FADER_X - 40, FADER_Y0 - 38, 80)):
-        block(cr, tx, ty, tw, 20, WHITE, r=3, side=4)
+        block(cr, tx, ty, tw, 20, LABEL, r=3, side=4)
         _text(cr, t, tx + tw / 2, ty + 15, 11, DARK_GREY, bold=True)
 
 
@@ -211,9 +214,9 @@ def draw_dynamic(cr, st):
 
     # Tasten oben (schwarze Fliesen, Power rot)
     for rid, t, x in TOP_BTNS:
-        col = RED if rid == "power" else BLACK
+        col = RED if rid == "power" else WHITE
         oy = block(cr, x, TOP_Y, TOP_W, TOP_H, col, rid in P, r=3, side=5)
-        _text(cr, t, x + TOP_W / 2, TOP_Y + oy + 17, 10, WHITE, bold=True)
+        _text(cr, t, x + TOP_W / 2, TOP_Y + oy + 17, 10, _ink(col), bold=True)
     trans_led(cr, 1146, 31, st.bt_led and on, (0.2, 0.55, 1.0), 5)
 
     # Disc
@@ -225,9 +228,9 @@ def draw_dynamic(cr, st):
         cr.rotate(st.disc_angle)
         _hub(cr)
         cr.restore()
-        _text(cr, "NO DISC", DISC_C[0], DISC_C[1] + 82, 15, WHITE, bold=True)
+        _text(cr, "NO DISC", DISC_C[0], DISC_C[1] + 82, 15, BLACK, bold=True)
         _text(cr, "OPEN = Ordner · FILES = Dateien · oder hierher ziehen",
-              DISC_C[0], DISC_C[1] + 104, 11, _lighten(DARK_GREY, 0.6))
+              DISC_C[0], DISC_C[1] + 104, 11, DARK_GREY)
 
     # Display-Inhalt (gleiche Anzeige wie klassisch)
     _display(cr, st)
@@ -235,16 +238,17 @@ def draw_dynamic(cr, st):
     # Ziffernblock: runde Fliesen
     for lab, x, y in KEYS:
         kid = "key_" + lab
-        col = BLUE if lab in "TC" else YELLOW
+        col = WHITE
         r = min(KEY_W, KEY_H) / 2
         cx, cy = x + KEY_W / 2, y + KEY_H / 2 - 2
         oy = round_tile(cr, cx, cy, r, col, kid in P)
         text = {"T": "TIME", "C": "CLR"}.get(lab, lab)
-        _text(cr, text, cx, cy + oy + (7 if len(text) == 1 else 4), 20 if len(text) == 1 else 11, _ink(col), bold=True)
+        _text(cr, text, cx, cy + oy + (7 if len(text) == 1 else 4), 20 if len(text) == 1 else 11,
+              RED if lab in "TC" else BLACK, bold=True)
     x, y, w, h = ENTER
-    oy = block(cr, x, y, w, h - 6, GREEN, "enter" in P, studs=False)
-    stud(cr, x + w / 2 - 15, y + oy + 18, GREEN, 8)
-    stud(cr, x + w / 2 + 15, y + oy + 18, GREEN, 8)
+    oy = block(cr, x, y, w, h - 6, RED, "enter" in P, studs=False)
+    stud(cr, x + w / 2 - 15, y + oy + 18, RED, 8)
+    stud(cr, x + w / 2 + 15, y + oy + 18, RED, 8)
     _text(cr, "ENTER", x + w / 2, y + oy + 64, 13, WHITE, bold=True)
 
     # Lautstärke: runde blaue Platte mit Noppen, dreht sich mit dem Wert
@@ -252,34 +256,34 @@ def draw_dynamic(cr, st):
 
     # Memory A/B/C: orange Steine mit Leuchte
     for i, (rid, t, x) in enumerate(MEM):
-        oy = block(cr, x, MEM_Y, MEM_W, MEM_H - 4, ORANGE, rid in P)
-        _text(cr, t, x + 26, MEM_Y + oy + 29, 22, WHITE, bold=True)
+        oy = block(cr, x, MEM_Y, MEM_W, MEM_H - 4, WHITE, rid in P)
+        _text(cr, t, x + 26, MEM_Y + oy + 29, 22, BLACK, bold=True)
         trans_led(cr, x + MEM_W - 16, MEM_Y + oy + 19, st.cue_set[i] and on)
 
     # Shuttle: Schiene + gelber 1x2-Stein
     x, y, w, h = SHUTTLE
-    block(cr, x, y + 12, w, h - 24, DARK_GREY, r=3, side=3)
+    block(cr, x, y + 12, w, h - 24, LIGHT_GREY, r=3, side=3)
     _text(cr, "REW", x + 16, y + h + 14, 10, BLACK, bold=True)
     _text(cr, "FF", x + w - 12, y + h + 14, 10, BLACK, bold=True)
     jx = x + w / 2 + st.jog * JOG_TRAVEL
-    block(cr, jx - 26, y, 52, h - 6, YELLOW, "jog" in P, r=3, studs=False)
-    stud(cr, jx - 12, y + 17, YELLOW, 8)
-    stud(cr, jx + 12, y + 17, YELLOW, 8)
+    block(cr, jx - 26, y, 52, h - 6, RED, "jog" in P, r=3, studs=False)
+    stud(cr, jx - 12, y + 17, RED, 8)
+    stud(cr, jx + 12, y + 17, RED, 8)
 
     # Tempo-Fader: Schiene + roter 1x2-Stein
     _fader(cr, st.varispeed_norm)
 
     # Laufwerkstasten: große Steine mit aufgedrucktem Symbol
-    colors = {"prev": BLUE, "next": BLUE, "stop": RED, "play": GREEN}
+    colors = {"prev": WHITE, "next": WHITE, "stop": WHITE, "play": RED}
     for rid, x, w in TRANSPORT:
         col = colors[rid]
         oy = block(cr, x, TR_Y, w, TR_H - 6, col, rid in P)
         for k in range(int(w // PITCH)):
             stud(cr, x + (w - (int(w // PITCH) - 1) * PITCH) / 2 + k * PITCH, TR_Y + oy + 16, col, 8)
         _rrect(cr, x + 12, TR_Y + oy + 32, w - 24, 34, 3)
-        _rgb(cr, WHITE)
+        _rgb(cr, LABEL if col == WHITE else WHITE)
         cr.fill()
-        _icon(cr, rid, x + w / 2, TR_Y + oy + 49, BLACK)
+        _icon(cr, rid, x + w / 2, TR_Y + oy + 49, RED if col == WHITE else BLACK)
 
     # kleine Tasten: weiße Fliesen mit Leuchte
     leds = {"vs_display": st.stretch, "repeat": st.repeat > 0, "shuffle": st.shuffle, "eject": None}
@@ -301,13 +305,13 @@ def _hub(cr):
     _rgb(cr, (0, 0, 0), 0.3)
     cr.fill()
     _circle(cr, 0, 6, 44)
-    _rgb(cr, _shade(WHITE, 0.7))
+    _rgb(cr, _shade(RED, 0.7))
     cr.fill()
     _circle(cr, 0, 0, 44)
-    _rgb(cr, WHITE)
+    _rgb(cr, RED)
     cr.fill()
     for dx, dy in ((-14, -14), (14, -14), (-14, 14), (14, 14)):
-        stud(cr, dx, dy, WHITE, 9)
+        stud(cr, dx, dy, RED, 9)
 
 
 def _disc(cr, st):
@@ -318,7 +322,7 @@ def _disc(cr, st):
     cr.save()
     cr.translate(cx, cy)
     cr.rotate(st.disc_angle)
-    col = st.disc_color
+    col = WHITE
     # Flanke der runden Platte
     _circle(cr, 0, 7, DISC_R)
     _rgb(cr, _shade(col, 0.65))
@@ -363,16 +367,16 @@ def _knob(cr, value):
         t = math.radians(225 - 27 * i)
         px, py = cx + math.cos(t) * (KNOB_R + 12), cy - math.sin(t) * (KNOB_R + 12)
         _circle(cr, px, py, 3)
-        _rgb(cr, WHITE if i * 0.1 <= value + 1e-6 else DARK_GREY)
+        _rgb(cr, RED if i * 0.1 <= value + 1e-6 else LIGHT_GREY)
         cr.fill()
-    round_tile(cr, cx, cy, KNOB_R, BLUE)
+    round_tile(cr, cx, cy, KNOB_R, WHITE)
     cr.save()
     cr.translate(cx, cy)
     cr.rotate(-a + math.pi / 2)
     for dx, dy in ((-15, -15), (15, -15), (-15, 15), (15, 15)):
-        stud(cr, dx, dy, BLUE, 8)
+        stud(cr, dx, dy, WHITE, 8)
     _rrect(cr, -4, -KNOB_R + 4, 8, 18, 2)
-    _rgb(cr, WHITE)
+    _rgb(cr, RED)
     cr.fill()
     cr.restore()
 
@@ -382,9 +386,9 @@ def _fader(cr, value):
     for i in range(9):
         y = FADER_Y1 - i * (FADER_Y1 - FADER_Y0) / 8
         cr.rectangle(x - 34, y - 1, 14 if i != 4 else 18, 2)
-        _rgb(cr, WHITE if i == 4 else DARK_GREY)
+        _rgb(cr, RED if i == 4 else LIGHT_GREY)
         cr.fill()
-    block(cr, x - 6, FADER_Y0 - 10, 12, FADER_Y1 - FADER_Y0 + 20, DARK_GREY, r=3, side=3)
+    block(cr, x - 6, FADER_Y0 - 10, 12, FADER_Y1 - FADER_Y0 + 20, LIGHT_GREY, r=3, side=3)
     cy = FADER_Y1 - max(0.0, min(1.0, value)) * (FADER_Y1 - FADER_Y0)
     block(cr, x - 26, cy - 15, 52, 26, RED, r=3, side=5)
     stud(cr, x - 12, cy - 3, RED, 8)
