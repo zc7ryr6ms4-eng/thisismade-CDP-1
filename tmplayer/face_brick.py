@@ -23,7 +23,7 @@ ORANGE = (1.00, 0.50, 0.00)
 WHITE = (0.965, 0.965, 0.955)
 BASE = (0.93, 0.93, 0.92)          # Grundplatte
 WELL = (0.84, 0.84, 0.85)          # runde Platte unter der Disc
-LABEL = (0.86, 0.86, 0.87)         # Beschriftungsfliesen
+LABEL = (0.86, 0.86, 0.87)         # Beschriftungen
 BLACK = (0.13, 0.13, 0.14)
 DARK_GREY = (0.39, 0.40, 0.42)
 LIGHT_GREY = (0.63, 0.65, 0.68)
@@ -48,98 +48,99 @@ def _ink(c):
 
 
 # ----------------------------------------------------------------- Grundformen
+# Modern und klar: flache Oberflächen, feine Kontur, kurze Flanke, weicher Schatten.
+EDGE = 0.80          # Konturfarbe = Grundfarbe * EDGE
+SIDE_F = 0.82        # Flankenfarbe
+
+
+def _outline(cr, color, w=1.0):
+    _rgb(cr, _shade(color, EDGE))
+    cr.set_line_width(w)
+    cr.stroke()
+
+
 def stud(cr, cx, cy, color, r=STUD_R, flat=False):
-    """Eine Noppe: Schatten, Zylinderflanke, Deckel mit Glanzlicht."""
-    h = 0 if flat else 4.5
-    _circle(cr, cx + 1.5, cy + h + 2, r)
-    _rgb(cr, (0, 0, 0), 0.22)
+    """Flache Noppe: weicher Schatten, kurze Flanke, glatter Deckel mit feiner Kontur."""
+    h = 0 if flat else 3.0
+    _circle(cr, cx + 0.8, cy + h + 1.8, r)
+    _rgb(cr, (0, 0, 0), 0.10)
     cr.fill()
     if h:
-        cr.rectangle(cx - r, cy, 2 * r, h)
         _circle(cr, cx, cy + h, r)
-        _rgb(cr, _shade(color, 0.72))
+        _rgb(cr, _shade(color, SIDE_F))
+        cr.fill()
+        cr.rectangle(cx - r, cy, 2 * r, h)
         cr.fill()
     _circle(cr, cx, cy, r)
-    g = cairo.LinearGradient(cx - r, cy - r, cx + r, cy + r)
-    g.add_color_stop_rgb(0, *_lighten(color, 0.35))
-    g.add_color_stop_rgb(0.55, *color)
-    g.add_color_stop_rgb(1, *_shade(color, 0.85))
-    cr.set_source(g)
-    cr.fill()
-    _circle(cr, cx - r * 0.35, cy - r * 0.35, r * 0.28)
-    _rgb(cr, (1, 1, 1), 0.35)
-    cr.fill()
+    _rgb(cr, _lighten(color, 0.08))
+    cr.fill_preserve()
+    _outline(cr, color, 0.9)
+    cr.new_path()
+    cr.arc(cx, cy, r - 2.2, math.radians(200), math.radians(290))
+    _rgb(cr, (1, 1, 1), 0.55)
+    cr.set_line_width(1.2)
+    cr.stroke()
 
 
 def _studs_in(cr, x, y, w, h, color, r=STUD_R, pitch=PITCH):
     nx = max(1, int(w // pitch))
     ny = max(1, int(h // pitch))
     ox = x + (w - (nx - 1) * pitch) / 2
-    oy = y + (h - (ny - 1) * pitch) / 2 - 2
+    oy = y + (h - (ny - 1) * pitch) / 2 - 1.5
     for j in range(ny):
         for i in range(nx):
             stud(cr, ox + i * pitch, oy + j * pitch, color, r)
 
 
 def block(cr, x, y, w, h, color, pressed=False, r=4, studs=False, stud_r=STUD_R, side=SIDE):
-    """Ein Stein (mit Noppen) oder eine Fliese (glatt) in Draufsicht mit Flanke unten."""
-    oy = side * 0.6 if pressed else 0.0
+    """Stein bzw. Fliese: flache Oberseite, feine Kontur, kurze Flanke unten."""
+    side = min(side, 5.0)
+    oy = side * 0.7 if pressed else 0.0
     s = side - oy
-    _rrect(cr, x + 2, y + s + 3, w, h, r)
-    _rgb(cr, (0, 0, 0), 0.28)
+    _rrect(cr, x + 1, y + s + 2.5, w, h, r)
+    _rgb(cr, (0, 0, 0), 0.10)
     cr.fill()
     _rrect(cr, x, y + oy, w, h + s, r)
-    _rgb(cr, _shade(color, 0.68))
+    _rgb(cr, _shade(color, SIDE_F))
     cr.fill()
     _rrect(cr, x, y + oy, w, h, r)
-    g = cairo.LinearGradient(0, y + oy, 0, y + oy + h)
-    g.add_color_stop_rgb(0, *_lighten(color, 0.10))
-    g.add_color_stop_rgb(1, *color)
-    cr.set_source(g)
-    cr.fill()
-    cr.rectangle(x + r, y + oy + 1, w - 2 * r, 1.4)
-    _rgb(cr, (1, 1, 1), 0.35)
-    cr.fill()
+    _rgb(cr, _lighten(color, 0.06))
+    cr.fill_preserve()
+    _outline(cr, color, 1.0)
     if studs:
         _studs_in(cr, x, y + oy, w, h, color, stud_r)
     return oy
 
 
 def round_tile(cr, cx, cy, r, color, pressed=False):
-    oy = 3.0 if pressed else 0.0
-    s = 6 - oy
-    _circle(cr, cx + 2, cy + s + 3, r)
-    _rgb(cr, (0, 0, 0), 0.28)
+    oy = 2.5 if pressed else 0.0
+    s = 4.0 - oy
+    _circle(cr, cx + 1, cy + s + 2.5, r)
+    _rgb(cr, (0, 0, 0), 0.10)
+    cr.fill()
+    _circle(cr, cx, cy + oy + s, r)
+    _rgb(cr, _shade(color, SIDE_F))
     cr.fill()
     cr.rectangle(cx - r, cy + oy, 2 * r, s)
-    _circle(cr, cx, cy + oy + s, r)
-    _rgb(cr, _shade(color, 0.68))
     cr.fill()
     _circle(cr, cx, cy + oy, r)
-    g = cairo.LinearGradient(cx - r, cy - r, cx + r, cy + r)
-    g.add_color_stop_rgb(0, *_lighten(color, 0.25))
-    g.add_color_stop_rgb(1, *_shade(color, 0.9))
-    cr.set_source(g)
-    cr.fill()
+    _rgb(cr, _lighten(color, 0.06))
+    cr.fill_preserve()
+    _outline(cr, color, 1.0)
     return oy
 
 
 def trans_led(cr, cx, cy, on, color=(1.0, 0.15, 0.10), r=6):
-    """Durchsichtige runde 1x1-Platte als Leuchte."""
-    _circle(cr, cx + 1, cy + 2, r)
-    _rgb(cr, (0, 0, 0), 0.25)
+    """Runde Leuchte: klar, ohne Glanzeffekte."""
+    if on:
+        _circle(cr, cx, cy, r + 3.5)
+        _rgb(cr, color, 0.18)
+        cr.fill()
+    _circle(cr, cx, cy, r + 1.2)
+    _rgb(cr, (0, 0, 0), 0.12)
     cr.fill()
     _circle(cr, cx, cy, r)
-    if on:
-        g = cairo.RadialGradient(cx - r * 0.3, cy - r * 0.3, 0.5, cx, cy, r)
-        g.add_color_stop_rgb(0, *_lighten(color, 0.7))
-        g.add_color_stop_rgb(1, *color)
-        cr.set_source(g)
-    else:
-        _rgb(cr, _shade(color, 0.45), 0.75)
-    cr.fill()
-    _circle(cr, cx - r * 0.35, cy - r * 0.35, r * 0.3)
-    _rgb(cr, (1, 1, 1), 0.5)
+    _rgb(cr, color if on else (0.80, 0.80, 0.81))
     cr.fill()
 
 
@@ -160,39 +161,39 @@ def draw_static(cr):
     _rrect(cr, 0, 0, DEV_W, DEV_H, 10)
     _rgb(cr, BASE)
     cr.fill()
-    for j in range(int(DEV_H // PITCH)):
-        for i in range(int(DEV_W // PITCH)):
-            cx, cy = PITCH / 2 + i * PITCH, PITCH / 2 + j * PITCH
-            if (cx - DISC_C[0]) ** 2 + (cy - DISC_C[1]) ** 2 < (WELL_R + 8) ** 2:
-                continue
-            stud(cr, cx, cy, BASE, 8.0)
-
-    # Namensschild
-    block(cr, 26, 14, 330, 44, WHITE)
-    _text(cr, "thisismade", 44, 45, 25, BLACK, align="left", bold=True)
-    _text(cr, "CD PLAYER · CDP-01", 196, 44, 13, DARK_GREY, align="left", bold=True)
-
-    # runde Grundplatte für die Disc
-    cx, cy = DISC_C
-    _circle(cr, cx + 3, cy + 10, WELL_R)
-    _rgb(cr, (0, 0, 0), 0.30)
+    # feine Fuge zwischen Laufwerk und Bedienfeld
+    cr.rectangle(600, 14, 1, DEV_H - 28)
+    _rgb(cr, _shade(BASE, 0.88))
     cr.fill()
-    _circle(cr, cx, cy + 7, WELL_R)
-    _rgb(cr, _shade(WELL, 0.75))
+    cr.rectangle(601, 14, 1, DEV_H - 28)
+    _rgb(cr, (1, 1, 1), 0.8)
+    cr.fill()
+
+    # Name direkt aufgedruckt
+    _text(cr, "thisismade", 34, 46, 27, BLACK, align="left", bold=True)
+    _text(cr, "CD PLAYER  ·  CDP-01", 200, 45, 12, DARK_GREY, align="left")
+
+    # runde Platte für die Disc
+    cx, cy = DISC_C
+    _circle(cr, cx + 1, cy + 6, WELL_R)
+    _rgb(cr, (0, 0, 0), 0.08)
+    cr.fill()
+    _circle(cr, cx, cy + 4, WELL_R)
+    _rgb(cr, _shade(WELL, SIDE_F))
     cr.fill()
     _circle(cr, cx, cy, WELL_R)
     _rgb(cr, WELL)
-    cr.fill()
-    n = 40
-    for i in range(n):
-        a = 2 * math.pi * i / n
-        stud(cr, cx + math.cos(a) * (WELL_R - 12), cy + math.sin(a) * (WELL_R - 12), WELL, 7.0)
+    cr.fill_preserve()
+    _outline(cr, WELL)
+    _circle(cr, cx, cy, WELL_R - 14)
+    _outline(cr, WELL, 0.8)
 
     # Display-Rahmen (schwarzer Stein mit Noppenreihe)
     x, y, w, h = DISPLAY
     block(cr, x - 10, y - 34, w + 20, h + 44, BLACK, r=5)
-    for i in range(int((w + 20) // PITCH)):
-        stud(cr, x - 10 + PITCH / 2 + i * PITCH + 3, y - 19, BLACK, 8)
+    n = int((w + 20) // PITCH)
+    for i in range(n):
+        stud(cr, x - 10 + (w + 20 - (n - 1) * PITCH) / 2 + i * PITCH, y - 18, BLACK, 7.5)
     _rrect(cr, x, y, w, h, 4)
     g = cairo.LinearGradient(0, y, 0, y + h)
     g.add_color_stop_rgb(0, 0.05, 0.02, 0.02)
@@ -200,12 +201,10 @@ def draw_static(cr):
     cr.set_source(g)
     cr.fill()
 
-    # Beschriftungsfliesen
-    for t, tx, ty, tw in (("VOLUME", KNOB_C[0] - 40, KNOB_C[1] + KNOB_R + 12, 80),
-                          ("MEMORY", 630, MEM_Y - 28, 90), ("SHUTTLE", SHUTTLE[0], MEM_Y - 28, 90),
-                          ("TEMPO", FADER_X - 40, FADER_Y0 - 38, 80)):
-        block(cr, tx, ty, tw, 20, LABEL, r=3, side=4)
-        _text(cr, t, tx + tw / 2, ty + 15, 11, DARK_GREY, bold=True)
+    # Beschriftungen, direkt aufgedruckt
+    for t, tx, ty in (("VOLUME", KNOB_C[0], KNOB_C[1] + KNOB_R + 30), ("MEMORY", 630, MEM_Y - 12),
+                      ("SHUTTLE", SHUTTLE[0], MEM_Y - 12), ("TEMPO", FADER_X, FADER_Y0 - 22)):
+        _text(cr, t, tx, ty, 11, DARK_GREY, align="left" if t in ("MEMORY", "SHUTTLE") else "center", bold=True)
 
 
 def draw_dynamic(cr, st):
@@ -301,35 +300,37 @@ def draw_dynamic(cr, st):
 
 def _hub(cr):
     """Runder 2x2-Stein als Spindel."""
-    _circle(cr, 2, 8, 44)
-    _rgb(cr, (0, 0, 0), 0.3)
+    _circle(cr, 1, 6, 44)
+    _rgb(cr, (0, 0, 0), 0.12)
     cr.fill()
-    _circle(cr, 0, 6, 44)
-    _rgb(cr, _shade(RED, 0.7))
+    _circle(cr, 0, 4, 44)
+    _rgb(cr, _shade(RED, SIDE_F))
     cr.fill()
     _circle(cr, 0, 0, 44)
     _rgb(cr, RED)
-    cr.fill()
+    cr.fill_preserve()
+    _outline(cr, RED)
     for dx, dy in ((-14, -14), (14, -14), (-14, 14), (14, 14)):
         stud(cr, dx, dy, RED, 9)
 
 
 def _disc(cr, st):
     cx, cy = DISC_C
-    _circle(cr, cx + 3, cy + 12, DISC_R)
-    _rgb(cr, (0, 0, 0), 0.35)
+    _circle(cr, cx + 2, cy + 8, DISC_R)
+    _rgb(cr, (0, 0, 0), 0.12)
     cr.fill()
     cr.save()
     cr.translate(cx, cy)
     cr.rotate(st.disc_angle)
     col = WHITE
     # Flanke der runden Platte
-    _circle(cr, 0, 7, DISC_R)
-    _rgb(cr, _shade(col, 0.65))
+    _circle(cr, 0, 4, DISC_R)
+    _rgb(cr, _shade(col, SIDE_F))
     cr.fill()
     _circle(cr, 0, 0, DISC_R)
     _rgb(cr, col)
-    cr.fill()
+    cr.fill_preserve()
+    _outline(cr, col)
     cover = getattr(st, "cover", None)
     inner = DISC_R - 40
     if cover is not None:
@@ -351,10 +352,12 @@ def _disc(cr, st):
             _text(cr, ln[:28], 0, -92 + i * 16, 12, ink, bold=True)
         _text(cr, "thisismade", 0, 140, 18, ink, bold=True)
     # Noppenring am Rand
-    n = 30
+    _circle(cr, 0, 0, DISC_R - 34)
+    _outline(cr, col, 0.8)
+    n = 16
     for i in range(n):
         a = 2 * math.pi * i / n
-        stud(cr, math.cos(a) * (DISC_R - 20), math.sin(a) * (DISC_R - 20), col, 9)
+        stud(cr, math.cos(a) * (DISC_R - 17), math.sin(a) * (DISC_R - 17), col, 7.5)
     _hub(cr)
     cr.restore()
 
