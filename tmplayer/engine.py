@@ -200,6 +200,46 @@ class Engine(GObject.Object):
             self._pending = (pos, was == "playing")
             self.pb.set_state(Gst.State.PAUSED)
 
+    def resolution(self):
+        """z. B. '44.1 kHz · 16 bit · FLAC' bzw. '44.1 kHz · 320 kbps · MP3'."""
+        rate = bits = None
+        try:
+            pad = self.pb.emit("get-audio-pad", 0)
+            caps = pad.get_current_caps() if pad else None
+            if caps and caps.get_size():
+                st = caps.get_structure(0)
+                ok, r = st.get_int("rate")
+                rate = r if ok else None
+                fmt = st.get_string("format") or ""
+                if fmt.startswith(("S16", "U16")):
+                    bits = 16
+                elif fmt.startswith(("S24", "U24")):
+                    bits = 24
+                elif fmt.startswith(("S32", "U32")):
+                    bits = 32
+                elif fmt.startswith(("S8", "U8")):
+                    bits = 8
+        except (TypeError, AttributeError):
+            pass
+        parts = []
+        if rate:
+            parts.append(("%.1f" % (rate / 1000)).rstrip("0").rstrip(".") + " kHz")
+        codec = (self.tags.get("codec") or "").upper()
+        lossy = any(k in codec for k in ("MPEG", "MP3", "AAC", "VORBIS", "OPUS", "WMA"))
+        br = self.tags.get("bitrate")
+        if lossy and br:
+            parts.append("%d kbps" % round(br / 1000))
+        elif bits:
+            parts.append("%d bit" % bits)
+        if self.uri:
+            if self.uri.startswith("cdda://"):
+                parts.append("CD")
+            else:
+                ext = self.uri.rsplit(".", 1)[-1].upper() if "." in self.uri[-6:] else ""
+                if ext:
+                    parts.append(ext)
+        return " · ".join(parts)
+
     def set_volume(self, v):
         self.pb.set_property("volume", max(0.0, min(1.0, v)))
 

@@ -171,7 +171,7 @@ def draw_static(cr):
 
     # Name direkt aufgedruckt
     _text(cr, "thisismade", 34, 46, 27, BLACK, align="left", bold=True)
-    _text(cr, "CD PLAYER  ·  CDP-01", 200, 45, 12, DARK_GREY, align="left")
+    _text(cr, "CD PLAYER  ·  CDP-2", 200, 45, 12, DARK_GREY, align="left")
 
     # runde Platte für die Disc
     cx, cy = DISC_C

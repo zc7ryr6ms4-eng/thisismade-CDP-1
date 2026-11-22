@@ -3,7 +3,7 @@
   <id>io.github.thisismade.CDPlayer</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>BSD-3-Clause</project_license>
-  <name>Thisismade CD Player</name>
+  <name>thisismade cdp-2</name>
   <summary>CD player software with tempo, key lock, memory cues and shuttle</summary>
   <summary xml:lang="de">CD-Player-Software mit Tempo, Key Lock, Memory-Cues und Shuttle</summary>
   <description>

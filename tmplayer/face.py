@@ -1,9 +1,10 @@
-"""Zeichnet die Gerätefront des Thisismade CD Player (Cairo) und liefert die Klickflächen.
+"""Zeichnet die Gerätefront des thisismade cdp-2 (Cairo) und liefert die Klickflächen.
 
 Koordinaten sind Geräteeinheiten: die Front ist DEV_W x DEV_H groß,
 (0, 0) ist ihre linke obere Ecke.
 """
 import math
+import time
 
 import cairo
 
@@ -410,7 +411,7 @@ def draw_static(cr):
     cr.fill()
 
     _text(cr, "thisismade", 40, 42, 24, (0.12, 0.12, 0.13), align="left", bold=True)
-    _text(cr, "CD PLAYER  ·  CDP-01", 184, 41, 12, TXT_DIM, align="left")
+    _text(cr, "CD PLAYER  ·  CDP-2", 184, 41, 12, TXT_DIM, align="left")
 
     # Plattenteller-Mulde
     cx, cy = DISC_C
@@ -564,13 +565,16 @@ def _display(cr, st, on_col=None, off_col=None, hot_on=(1.0, 0.62, 0.14), hot_of
             _rgb(cr, L(True))
             cr.fill()
         _digits(cr, main[10:12], x + 372, y + 38, dw, dh, pitch, on_col, off_col)
+    # Titel (Laufschrift bei langen Namen) und Auflösung
+    if on and not getattr(st, "msg_mode", False):
+        _title_line(cr, st, x, y, w, L(True))
     # Anzeigen rechts
     ind = [("REPEAT" if st.repeat != 2 else "REPEAT 1", st.repeat > 0), ("SHUFFLE", st.shuffle),
            ("KEY LOCK", st.stretch), ("PAUSE", st.paused), ("REMAIN", st.remain)]
     for i, (t, a) in enumerate(ind):
         _text(cr, t, x + w - 14, y + 26 + i * 15, 10, L(a), align="right")
     # untere Zeile: Tempo, Lautstärke, Pegel
-    by = y + 118
+    by = y + 126
     _text(cr, "TEMPO", x + 18, by - 6, 10, L(True), align="left")
     _digits(cr, st.vs_text if on else "   ", x + 18, by, 15, 26, 20, on_col, off_col)
     _text(cr, "%", x + 84, by + 25, 12, L(True), align="left")
@@ -590,3 +594,34 @@ def _display(cr, st, on_col=None, off_col=None, hot_on=(1.0, 0.62, 0.14), hot_of
             off = hot_off if hot else off_col
             _rgb(cr, col if (i < lit or (pk and i == pk - 1)) else off)
             cr.fill()
+
+
+def _title_line(cr, st, x, y, w, col):
+    title = getattr(st, "title", "") or ""
+    res = getattr(st, "resolution", "") or ""
+    ty = y + 101
+    cr.select_font_face(FONT, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+    cr.set_font_size(11)
+    rw = cr.text_extents(res).x_advance if res else 0
+    if res:
+        _rgb(cr, col)
+        cr.move_to(x + w - 14 - rw, ty)
+        cr.show_text(res)
+    if not title:
+        return
+    box_x, box_w = x + 18, w - 32 - rw - (16 if res else 0)
+    tw = cr.text_extents(title).x_advance
+    cr.save()
+    cr.rectangle(box_x, ty - 12, box_w, 16)
+    cr.clip()
+    _rgb(cr, col)
+    if tw <= box_w:
+        cr.move_to(box_x, ty)
+        cr.show_text(title)
+    else:
+        gap = 50
+        off = (time.monotonic() * 28) % (tw + gap)
+        for k in (0, 1):
+            cr.move_to(box_x - off + k * (tw + gap), ty)
+            cr.show_text(title)
+    cr.restore()

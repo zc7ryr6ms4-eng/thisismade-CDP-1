@@ -135,7 +135,7 @@ class Mpris:
                 "CanSetFullscreen": GLib.Variant("b", False),
                 "Fullscreen": GLib.Variant("b", False),
                 "HasTrackList": GLib.Variant("b", False),
-                "Identity": GLib.Variant("s", "Thisismade CD Player"),
+                "Identity": GLib.Variant("s", "thisismade cdp-2"),
                 "DesktopEntry": GLib.Variant("s", self.desktop_entry),
                 "SupportedUriSchemes": GLib.Variant("as", ["file", "cdda"]),
                 "SupportedMimeTypes": GLib.Variant("as", MIME),

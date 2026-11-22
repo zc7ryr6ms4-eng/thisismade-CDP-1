@@ -45,5 +45,5 @@ sudo apt-get update -qq || true
 sudo apt-get install -y "$TMP/pkg.deb"
 
 echo
-echo "Fertig! „Thisismade CD Player“ findest du jetzt in der GNOME-Übersicht."
+echo "Fertig! „thisismade cdp-2“ findest du jetzt in der GNOME-Übersicht."
 echo "Im Terminal: thisismade-cd-player [Ordner oder Dateien]"

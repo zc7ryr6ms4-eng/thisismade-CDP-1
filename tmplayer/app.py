@@ -1,4 +1,4 @@
-"""Thisismade CD Player – GTK4-Oberfläche und Bedienlogik."""
+"""thisismade cdp-2 – GTK4-Oberfläche und Bedienlogik."""
 import hashlib
 import io
 import json
@@ -29,7 +29,7 @@ from .engine import Engine, probe_cd  # noqa: E402
 from .mpris import Mpris  # noqa: E402
 
 APP_ID = "io.github.thisismade.CDPlayer"
-APP_NAME = "Thisismade CD Player"
+APP_NAME = "thisismade cdp-2"
 VERSION = "1.0.0"
 
 AUDIO_EXT = {".mp3", ".flac", ".ogg", ".oga", ".opus", ".wav", ".wave", ".aif", ".aiff",
@@ -784,6 +784,22 @@ class PlayerApp(Gtk.Application):
                 dots[1] = (2,)
         return main, dots
 
+    def _title_text(self):
+        info = self.current_info()
+        if not info:
+            return ""
+        t = info.get("title", "")
+        if info.get("artist"):
+            t = info["artist"] + " – " + t
+        return t.upper()
+
+    def _res_text(self):
+        now = time.monotonic()
+        if now - getattr(self, "_res_t", 0) > 1.0:      # Caps höchstens 1× pro Sekunde abfragen
+            self._res_t = now
+            self._res_cache = self.engine.resolution() if self.has_tracks() else ""
+        return self._res_cache
+
     def state(self):
         main, dots = self.display_state()
         cues = self._cues()
@@ -799,6 +815,7 @@ class PlayerApp(Gtk.Application):
             level_norm=self.level / 100.0, jog=self.jog,
             repeat=self.repeat, shuffle=self.shuffle, paused=self.engine.state == "paused",
             remain=self.time_mode == 1, msg_mode=bool(self.msg and time.monotonic() < self.msg_until),
+            title=self._title_text(), resolution=self._res_text(),
         )
 
     def animate(self, dt, now):
@@ -1420,7 +1437,7 @@ def _launch(argv):
         print("Konnte nicht starten:", " ".join(argv), ex, file=sys.stderr)
 
 
-HELP = """<b><big>Thisismade CD Player – Bedienung</big></b>
+HELP = """<b><big>thisismade cdp-2 – Bedienung</big></b>
 
 <b>Laden</b>
 • <b>OPEN</b>: Ordner laden (Unterordner werden mitgelesen)

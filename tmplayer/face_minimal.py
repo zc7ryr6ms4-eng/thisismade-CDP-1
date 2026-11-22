@@ -111,8 +111,7 @@ def draw_static(cr):
 
     # Name und Modell
     _text(cr, "thisismade", 30, 44, 24, TXT, align="left", bold=True)
-    _mono(cr, "CDP-01 / COMPACT DISC PLAYER", 31, 62, 10, TXT_DIM)
-    _mono(cr, "44.1 kHz · 16 bit", 470, 44, 10, TXT_DIM, align="right")
+    _mono(cr, "CDP-2 / COMPACT DISC PLAYER", 31, 62, 10, TXT_DIM)
     _rrect(cr, 520, 34, 54, 14, 7)
     _stroke(cr, ORANGE, 1.0)
     _mono(cr, "AUDIO", 547, 45, 9, ORANGE, align="center")
@@ -139,7 +138,7 @@ def draw_static(cr):
     _stroke(cr, (0.55, 0.55, 0.56), 1.0)
 
     # Nummerierte Beschriftungen
-    for t, tx, ty in (("01  NUMBER", 630, 266), ("02  VOLUME", 1086, 266), ("03  MEMORY", 630, 406),
+    for t, tx, ty in (("01  NUMBER", 630, 266), ("02  VOLUME", 1086, 268), ("03  MEMORY", 630, 406),
                       ("04  SHUTTLE", 890, 406), ("05  TRANSPORT", 630, 476), ("06  TEMPO", 1086, 406),
                       ("07  MODE", 630, 588)):
         _mono(cr, t, tx, ty, 9, TXT_DIM)
@@ -281,7 +280,7 @@ def _disc(cr, st):
             _text(cr, lines[0][:22].lower(), -150, -120, 22, ink, align="left", bold=True)
         for i, ln in enumerate(lines[1:5]):
             _mono(cr, ln[:30].lower(), -150, -96 + i * 15, 10, (0.30, 0.30, 0.32))
-        _mono(cr, "thisismade / cdp-01", -150, 170, 10, ink)
+        _mono(cr, "thisismade / cdp-2", -150, 170, 10, ink)
         # orange Markierung, zeigt die Drehung
         cr.rectangle(DISC_R - 40, -5, 24, 10)
         _rgb(cr, ORANGE)
@@ -295,11 +294,12 @@ def _disc(cr, st):
 
 
 def _knob(cr, value):
-    cx, cy = KNOB_C[0], KNOB_C[1] + 10
-    r = KNOB_R - 4
+    # mittig im Kasten "02 VOLUME" (x 1075…1186, y 255…392), samt Skala
+    cx, cy = 1131, 331
+    r = 33
     for i in range(31):
         a = math.radians(225 - 9 * i)
-        r0, r1 = r + 6, r + (13 if i % 5 == 0 else 9)
+        r0, r1 = r + 5, r + (12 if i % 5 == 0 else 8)
         lit = i / 30 <= value + 1e-6
         _line(cr, cx + math.cos(a) * r0, cy - math.sin(a) * r0, cx + math.cos(a) * r1, cy - math.sin(a) * r1,
               ORANGE if lit else LINE, 1.4 if i % 5 == 0 else 1.0)
