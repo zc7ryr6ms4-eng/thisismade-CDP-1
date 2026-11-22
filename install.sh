@@ -29,7 +29,7 @@ fi
 if [[ -z "$DEB" ]]; then
   echo "==> Lade neueste Version von github.com/$REPO"
   URL="$(wget -qO- "https://api.github.com/repos/$REPO/releases/latest" \
-        | grep -o '"browser_download_url": *"[^"]*_all\.deb"' | head -1 | cut -d'"' -f4)"
+        | grep -o '"browser_download_url": *"[^"]*thisismade-cd-player_[^"]*_all\.deb"' | head -1 | cut -d'"' -f4 || true)"
   if [[ -z "$URL" ]]; then
     echo "Kein Release gefunden." >&2
     exit 1

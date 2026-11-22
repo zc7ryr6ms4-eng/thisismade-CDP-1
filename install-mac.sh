@@ -13,7 +13,7 @@ TMP="$(mktemp -d)"
 trap 'hdiutil detach "$TMP/mnt" -quiet 2>/dev/null || true; rm -rf "$TMP"' EXIT
 
 URL="$(curl -fsSL "https://api.github.com/repos/$REPO/releases/latest" 2>/dev/null \
-      | grep -o '"browser_download_url": *"[^"]*\.dmg"' | head -1 | cut -d'"' -f4 || true)"
+      | grep -o '"browser_download_url": *"[^"]*ThisismadeCDPlayer[^"]*\.dmg"' | head -1 | cut -d'"' -f4 || true)"
 
 if [[ -n "$URL" ]]; then
   echo "==> Lade $(basename "$URL")"
