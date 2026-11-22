@@ -16,7 +16,7 @@ wget -qO- https://raw.githubusercontent.com/zc7ryr6ms4-eng/thisismade-CDP-1/main
 ```bash
 sudo snap install --dangerous ./thisismade-cd-player_*.snap
 ```
-(`--dangerous` ist nötig, weil das Snap nicht aus dem Snap Store kommt.)
+(`--dangerous` ist nötig, weil das Snap nicht aus dem Snap Store kommt.) Das Snap läuft nur unter **Wayland** (Standard bei Ubuntu mit GNOME), es nutzt kein X11.
 
 ## macOS (13 Ventura und neuer, Apple Silicon und Intel)
 

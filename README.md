@@ -13,7 +13,7 @@ Unter [**Releases**](../../releases/latest) liegen fertige Pakete:
 | Paket | So installierst du es |
 |---|---|
 | `thisismade-cd-player_*_all.deb` | doppelt anklicken (App-Zentrum) oder `sudo apt install ./thisismade-cd-player_*_all.deb` |
-| `thisismade-cd-player_*.snap` | `sudo snap install --dangerous ./thisismade-cd-player_*.snap` |
+| `thisismade-cd-player_*.snap` (nur Wayland, kein X11) | `sudo snap install --dangerous ./thisismade-cd-player_*.snap` |
 
 Oder alles mit einem Befehl – lädt die neueste Version und installiert sie samt Abhängigkeiten:
 
